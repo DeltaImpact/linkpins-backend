@@ -41,8 +41,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var token = await _tokenService.RegisterAsync(model);
-                return Ok(new {token});
+                var resopnsePlayload = await _tokenService.RegisterAsync(model);
+                return Ok(resopnsePlayload);
             }
             catch (Exception ex)
             {
@@ -57,8 +57,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var token = await _tokenService.LoginAsync(model);
-                return Ok(new {token});
+                var resopnsePlayload = await _tokenService.LoginAsync(model);
+                return Ok(resopnsePlayload);
             }
             catch (Exception ex)
             {

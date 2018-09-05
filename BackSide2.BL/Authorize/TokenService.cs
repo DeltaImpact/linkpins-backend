@@ -95,7 +95,14 @@ namespace BackSide2.BL.authorize
                 throw new TokenServiceException("SystemUserNotFound");
 
             await _personService.InsertAsync(personToRegister);
-            return GenerateJwtToken(model.Username, newbieRole.ToString(), model.Username);
+            return new
+            {
+                token = GenerateJwtToken(model.Username, newbieRole.ToString(), model.Username),
+                username = personToRegister.UserName,
+                email = personToRegister.Email,
+                Role = personToRegister.Role.ToString(),
+            };
+            //GenerateJwtToken(model.Username, newbieRole.ToString(), model.Username);
         }
 
         public async Task<object> LoginAsync(
@@ -106,7 +113,13 @@ namespace BackSide2.BL.authorize
                 await (await _personService.GetAllAsync(d =>
                         d.Email == model.Email && d.Password == Hash.GetPassHash(model.Password)))
                     .FirstOrDefaultAsync();
-            if (person != null) return GenerateJwtToken(person.Email, person.Role.ToString(), person.UserName);
+            if (person != null) return new
+            {
+                token = GenerateJwtToken(person.Email, person.Role.ToString(), person.UserName),
+                username = person.UserName,
+                email = person.Email,
+                Role = person.Role.ToString(),
+            };
 
             throw new TokenServiceException("Wrong email, or password.");
         }
@@ -130,9 +143,10 @@ namespace BackSide2.BL.authorize
             {
                 new Claim(JwtRegisteredClaimNames.Email, email),
                 new Claim(JwtRegisteredClaimNames.UniqueName, login),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim("role" , role),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
-
+            
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["JwtExpireDays"]));
