@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using BackSide2.BL.Entity;
+using BackSide2.BL.Exceptions;
 using BackSide2.DAO.Entities;
 using BackSide2.DAO.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -14,32 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BackSide2.BL.authorize
 {
-    [Serializable]
-    public class TokenServiceException : ApplicationException
-    {
-        public TokenServiceException()
-        {
-        }
-
-        public TokenServiceException(string message) : base(message)
-        {
-        }
-
-        public TokenServiceException(string message, Exception ex) : base(message)
-        {
-            Ex = ex;
-        }
-
-        // Конструктор для обработки сериализации типа
-        protected TokenServiceException(SerializationInfo info,
-            StreamingContext contex)
-            : base(info, contex)
-        {
-        }
-
-        public Exception Ex { get; }
-    }
-
+  
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
