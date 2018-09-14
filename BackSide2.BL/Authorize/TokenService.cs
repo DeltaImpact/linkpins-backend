@@ -102,10 +102,11 @@ namespace BackSide2.BL.authorize
 
         public async Task<object> GetUserProfileInfo(string email)
         {
-            return
-                await (await _personService.GetAllAsync(d =>
+            var user = await (await _personService.GetAllAsync(d =>
                         d.Email == email))
                     .FirstOrDefaultAsync();
+            //if (user != null) user.Role = user.Role.ToString();
+            return user;
         }
 
 

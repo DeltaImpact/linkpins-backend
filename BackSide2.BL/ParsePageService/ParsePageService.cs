@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Mime;
 using System.Runtime.Serialization;
 using System.Security.Claims;
 using System.Text;
@@ -36,10 +37,52 @@ namespace BackSide2.BL.ParsePageService
             htmlDoc = web.Load(model.Url);
 
             var titleNode = htmlDoc.DocumentNode.SelectSingleNode("//head/title");
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+            var linkTags = htmlDoc.DocumentNode.Descendants("img");
+            var linkedPages = htmlDoc.DocumentNode.Descendants("img")
+                .Select(a => a.GetAttributeValue("src", null))
+                .Where(u => !String.IsNullOrEmpty(u));
+
+
+            List<string> hrefTags = new List<string>();
+
+            foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
+            {
+                HtmlAttribute att = link.Attributes["href"];
+                hrefTags.Add(att.Value);
+            }
+
+            List<string> ihrefTags = new List<string>();
+
+            foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//img"))
+            {
+
+                string att = link.Attributes["src"].Value;
+                Console.WriteLine(att);
+                //foreach (var attr in link.Attributes)
+                //{
+                    
+                //}
+                if (att != "") ihrefTags.Add(att);
+            }
+
+
+
+
+
+
+
+
+
 
             var urls = htmlDoc.DocumentNode.Descendants("img")
                 .Select(e => e.GetAttributeValue("src", null))
                 .Where(s => !String.IsNullOrEmpty(s));
+
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             var texts = htmlDoc.DocumentNode.Descendants("p");
 
@@ -61,7 +104,8 @@ namespace BackSide2.BL.ParsePageService
             {
                 url = model.Url,
                 header = titleNode.InnerText,
-                images = urls,
+                //images = urls,
+                images = ihrefTags,
                 possibleDescriptions = text
             };
 

@@ -77,7 +77,7 @@ namespace BackSide2.Controllers
             {
                 UserName = userBD.UserName,
                 Email = userBD.Email,
-                Role = userBD.Role,
+                Role = userBD.Role.ToString(),
                 FirstName = userBD.FirstName,
                 Surname = userBD.Surname,
                 Gender = userBD.Gender,
