@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
-using System.Net.Mime;
-using System.Runtime.Serialization;
-using System.Security.Claims;
+using System.Net;
+using System.Security.Policy;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using BackSide2.BL.authorize;
+using System.Web;
 using BackSide2.BL.Entity;
-using BackSide2.DAO.Entities;
-using BackSide2.DAO.Repository;
 using HtmlAgilityPack;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BackSide2.BL.ParsePageService
 {
@@ -30,61 +26,143 @@ namespace BackSide2.BL.ParsePageService
         }
 
 
+        private static HtmlAttribute GetAttr(HtmlNode linkTag, string attr)
+        {
+            return linkTag.Attributes.FirstOrDefault(x =>
+                x.Name.Equals(attr, StringComparison.InvariantCultureIgnoreCase));
+        }
+
         public async Task<object> ParsePageAsync(ParsePageDto model)
         {
             HtmlWeb web = new HtmlWeb();
+            //web.OverrideEncoding = Encoding.UTF8;
+            //web.OverrideEncoding = Encoding;
+
+            //web.OverrideEncoding = Encoding.GetEncoding("ISO-8859-1");
+            //web.OverrideEncoding = Encoding.GetEncoding("iso-8859-1");
+            web.AutoDetectEncoding = false;
+            web.OverrideEncoding = Encoding.UTF8;
+
             HtmlDocument htmlDoc;
             htmlDoc = web.Load(model.Url);
 
+            var encoding = htmlDoc.Encoding;
+
+
+            string rootAdress = web.ResponseUri.Host;
+            string fullRootAdress = web.ResponseUri.AbsoluteUri.Split(rootAdress, StringSplitOptions.None)[0] + rootAdress;
+
+
             var titleNode = htmlDoc.DocumentNode.SelectSingleNode("//head/title");
+
+            //var titleNode1 = htmlDoc.DocumentNode.SelectNodes("//link/title");
+
+
+            //foreach (Match match in Regex.Matches(htmlText, "<link .*? href=\"(.*?.ico)\""))
+            //{
+            //    String url = match.Groups[1].Value;
+
+            //    Console.WriteLine(url);
+            //}
+
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+            //List<string> hrefTags = new List<string>();
 
-            var linkTags = htmlDoc.DocumentNode.Descendants("img");
-            var linkedPages = htmlDoc.DocumentNode.Descendants("img")
-                .Select(a => a.GetAttributeValue("src", null))
-                .Where(u => !String.IsNullOrEmpty(u));
-
-
-            List<string> hrefTags = new List<string>();
-
-            foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
-            {
-                HtmlAttribute att = link.Attributes["href"];
-                hrefTags.Add(att.Value);
-            }
+            //foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
+            //{
+            //    HtmlAttribute att = link.Attributes["href"];
+            //    hrefTags.Add(att.Value);
+            //}
 
             List<string> ihrefTags = new List<string>();
 
-            foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//img"))
-            {
+            List<string> favicon = new List<string>();
+            List<string> possibleLogo = new List<string>();
+            List<string> possibleAvatar = new List<string>();
+            List<string> otherImages = new List<string>();
 
-                string att = link.Attributes["src"].Value;
-                Console.WriteLine(att);
-                //foreach (var attr in link.Attributes)
-                //{
-                    
-                //}
-                if (att != "") ihrefTags.Add(att);
+            //string siteLink = model.Url.TrimEnd('/');
+            string siteLink = fullRootAdress;
+            //siteLink = "";
+
+            foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//link[@href]"))
+            {
+                HtmlAttribute att = link.Attributes["href"];
+                if (att.Value.EndsWith(".ico"))
+                {
+                    var faviconLink = att.Value;
+                    if (faviconLink.StartsWith('/'))
+                    {
+                        faviconLink = siteLink + faviconLink;
+                    }
+                    favicon.Add(faviconLink);
+                }
             }
 
+            //foreach (Match match in Regex.Matches(htmlDoc.ToString(), "<link .*? href=\"(.*?.ico)\""))
+            //{
+            //    String url = match.Groups[1].Value;
+            //    //favicon.Add(url);
 
+            //    Console.WriteLine(url);
+            //}
 
+            foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//img"))
+            {
+                string scr = link.Attributes["src"].Value;
 
+                if (scr.StartsWith("//"))
+                {
+                } else if (scr.StartsWith('/'))
+                {
+                    scr = siteLink + scr;
+                }
 
+                string linkClass = "";
+                //string linkWidth = null;
+                //string linkHeight = null;
+                //linkClass = link.Attributes["class"].Value;
 
+                foreach (var attr in link.Attributes)
+                {
+                    if (attr.Name == "class")
+                    {
+                        linkClass = attr.Value;
+                    }
 
+                    //if (attr.Name == "width") linkWidth = attr.Value;
+                    //if (attr.Name == "height") linkHeight = attr.Value;
+                }
 
+                if (scr != "")
+                {
+                    if (linkClass.Contains("logo") || scr.Contains("logo"))
+                    {
+                        possibleLogo.Add(scr);
+                    }
+                    else if (linkClass.Contains("avatar") || scr.Contains("avatar"))
+                    {
+                        possibleAvatar.Add(scr);
+                    }
+                    else if (linkClass != null)
+                    {
+                        otherImages.Add(scr);
+                    }
+                }
 
-
-            var urls = htmlDoc.DocumentNode.Descendants("img")
-                .Select(e => e.GetAttributeValue("src", null))
-                .Where(s => !String.IsNullOrEmpty(s));
-
+                //if (scr != "") ihrefTags.Add(scr);
+            }
+            ihrefTags.AddRange(favicon);
+            ihrefTags.AddRange(possibleLogo);
+            ihrefTags.AddRange(otherImages);
+            ihrefTags.AddRange(possibleAvatar);
+            ihrefTags = ihrefTags.Distinct().ToList();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            var texts = htmlDoc.DocumentNode.Descendants("p");
+
+            //var texts = htmlDoc.DocumentNode.Descendants("p");
 
             List<string> text = new List<string>();
             foreach (HtmlNode node in htmlDoc.DocumentNode.SelectNodes("//text()"))
@@ -104,7 +182,7 @@ namespace BackSide2.BL.ParsePageService
             {
                 url = model.Url,
                 header = titleNode.InnerText,
-                //images = urls,
+                //images = ihrefObj,
                 images = ihrefTags,
                 possibleDescriptions = text
             };
