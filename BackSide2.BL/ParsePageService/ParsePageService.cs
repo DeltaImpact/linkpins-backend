@@ -44,7 +44,16 @@ namespace BackSide2.BL.ParsePageService
             web.OverrideEncoding = Encoding.UTF8;
 
             HtmlDocument htmlDoc;
-            htmlDoc = web.Load(model.Url);
+            try
+            {
+                htmlDoc = web.Load(model.Url);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        
 
             var encoding = htmlDoc.Encoding;
 
