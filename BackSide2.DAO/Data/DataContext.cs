@@ -43,5 +43,7 @@ namespace BackSide2.DAO.Data
         }
 
         public DbSet<Person> Persons { get; set; }
+        public DbSet<Board> Boards { get; set; }
+        public DbSet<Pin> Pins { get; set; }
     }
 }

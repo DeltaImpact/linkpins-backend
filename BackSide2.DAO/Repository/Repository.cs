@@ -39,7 +39,7 @@ namespace BackSide2.DAO.Repository
         {
             if (entity == null)
                 throw new NullReferenceException();
-
+                
             _entities.Add(entity);
             await _context.SaveChangesAsync();
         }

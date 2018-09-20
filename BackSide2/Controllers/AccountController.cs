@@ -71,7 +71,9 @@ namespace BackSide2.Controllers
         public async Task<IActionResult> UserInfo(
         )
         {
-            var userBD = (Person) await _tokenService.GetUserProfileInfo(User.FindFirstValue(ClaimTypes.Email));
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            var userBD = (Person) await _tokenService.GetUserProfileInfo(userEmail);
 
             var user = new
             {

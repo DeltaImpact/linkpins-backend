@@ -1,5 +1,7 @@
 ﻿using BackSide2.BL.authorize;
+using BackSide2.BL.BoardService;
 using BackSide2.BL.ParsePageService;
+using BackSide2.BL.PinService;
 using BackSide2.DAO.Repository;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +19,8 @@ namespace BackSide2.Extentions
             //serviceCollection.AddTransient<IPersonService, PersonService>();
             serviceCollection.AddScoped<ITokenService, TokenService>();
             serviceCollection.AddScoped<IParsePageService, ParsePageService>();
+            serviceCollection.AddScoped<IBoardService, BoardService>();
+            serviceCollection.AddScoped<IPinService, PinService>();
         }
     }
 }

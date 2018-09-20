@@ -82,7 +82,8 @@ namespace BackSide2
                 app.UseHsts();
             }
             app.UseCors(builder =>
-                builder.WithOrigins(Configuration["frontside-adress"])
+                builder
+                    //.WithOrigins(Configuration["frontside-adress"])
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod());
