@@ -37,11 +37,11 @@ namespace BackSide2.BL.BoardService
                 (await _personService.GetAllAsync(d => d.Email == userEmail))
                 .FirstOrDefaultAsync().Result.Id;
 
-            Board board =
+            Board boardInDb =
                 await (await _boardService.GetAllAsync(d => d.Name == model.Name && d.UserId == personId))
                     .FirstOrDefaultAsync();
 
-            if (board != null)
+            if (boardInDb != null)
             {
                 throw new BoardServiceException("Board with such name already added.");
             }
@@ -56,11 +56,8 @@ namespace BackSide2.BL.BoardService
                 CreatedBy = personId
             };
 
-            await _boardService.InsertAsync(boardToAdd);
-            return new
-            {
-                boardToAdd
-            };
+            var board = await _boardService.InsertAsync(boardToAdd);
+            return new { board };
         }
 
         public async Task<object> DeleteBoardAsync(
@@ -71,17 +68,17 @@ namespace BackSide2.BL.BoardService
                 (await _personService.GetAllAsync(d => d.Email == userEmail))
                 .FirstOrDefaultAsync().Result.Id;
 
-            Board board =
+            Board boardInDb =
                 await (await _boardService.GetAllAsync(d => d.Name == model.Name && d.UserId == personId))
                     .FirstOrDefaultAsync();
 
-            if (board == null)
+            if (boardInDb == null)
             {
                 throw new BoardServiceException("Board not found.");
             }
 
-            await _boardService.DeleteAsync(board);
-            return board;
+            var board = await _boardService.RemoveAsync(boardInDb);
+            return new {board};
         }
 
         public async Task<object> GetBoardsAsync(

@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Security.Policy;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using BackSide2.BL.Entity;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Configuration;
@@ -25,23 +20,18 @@ namespace BackSide2.BL.ParsePageService
             _configuration = configuration;
         }
 
-
-        private static HtmlAttribute GetAttr(HtmlNode linkTag, string attr)
-        {
-            return linkTag.Attributes.FirstOrDefault(x =>
-                x.Name.Equals(attr, StringComparison.InvariantCultureIgnoreCase));
-        }
-
         public async Task<object> ParsePageAsync(ParsePageDto model)
         {
-            HtmlWeb web = new HtmlWeb();
+            var web = new HtmlWeb
+            {
+                AutoDetectEncoding = false,
+                OverrideEncoding = Encoding.UTF8
+            };
             //web.OverrideEncoding = Encoding.UTF8;
             //web.OverrideEncoding = Encoding;
 
             //web.OverrideEncoding = Encoding.GetEncoding("ISO-8859-1");
             //web.OverrideEncoding = Encoding.GetEncoding("iso-8859-1");
-            web.AutoDetectEncoding = false;
-            web.OverrideEncoding = Encoding.UTF8;
 
             HtmlDocument htmlDoc;
             try
@@ -53,13 +43,13 @@ namespace BackSide2.BL.ParsePageService
                 Console.WriteLine(e);
                 throw;
             }
-        
+
 
             var encoding = htmlDoc.Encoding;
 
 
             string rootAdress = web.ResponseUri.Host;
-            string fullRootAdress = web.ResponseUri.AbsoluteUri.Split(rootAdress, StringSplitOptions.None)[0] + rootAdress;
+            string fullRootAdress = web.ResponseUri.AbsoluteUri.Split(rootAdress)[0] + rootAdress;
 
 
             var titleNode = htmlDoc.DocumentNode.SelectSingleNode("//head/title");
@@ -101,10 +91,7 @@ namespace BackSide2.BL.ParsePageService
                 if (att.Value.EndsWith(".ico"))
                 {
                     var faviconLink = att.Value;
-                    if (faviconLink.StartsWith('/'))
-                    {
-                        faviconLink = siteLink + faviconLink;
-                    }
+                    if (faviconLink.StartsWith('/')) faviconLink = siteLink + faviconLink;
                     favicon.Add(faviconLink);
                 }
             }
@@ -123,7 +110,8 @@ namespace BackSide2.BL.ParsePageService
 
                 if (scr.StartsWith("//"))
                 {
-                } else if (scr.StartsWith('/'))
+                }
+                else if (scr.StartsWith('/'))
                 {
                     scr = siteLink + scr;
                 }
@@ -134,34 +122,24 @@ namespace BackSide2.BL.ParsePageService
                 //linkClass = link.Attributes["class"].Value;
 
                 foreach (var attr in link.Attributes)
-                {
                     if (attr.Name == "class")
-                    {
                         linkClass = attr.Value;
-                    }
 
-                    //if (attr.Name == "width") linkWidth = attr.Value;
-                    //if (attr.Name == "height") linkHeight = attr.Value;
-                }
+                //if (attr.Name == "width") linkWidth = attr.Value;
+                //if (attr.Name == "height") linkHeight = attr.Value;
 
                 if (scr != "")
                 {
                     if (linkClass.Contains("logo") || scr.Contains("logo"))
-                    {
                         possibleLogo.Add(scr);
-                    }
                     else if (linkClass.Contains("avatar") || scr.Contains("avatar"))
-                    {
                         possibleAvatar.Add(scr);
-                    }
-                    else if (linkClass != null)
-                    {
-                        otherImages.Add(scr);
-                    }
+                    else if (linkClass != null) otherImages.Add(scr);
                 }
 
                 //if (scr != "") ihrefTags.Add(scr);
             }
+
             ihrefTags.AddRange(favicon);
             ihrefTags.AddRange(possibleLogo);
             ihrefTags.AddRange(otherImages);
@@ -197,6 +175,13 @@ namespace BackSide2.BL.ParsePageService
             };
 
             return response;
+        }
+
+
+        private static HtmlAttribute GetAttr(HtmlNode linkTag, string attr)
+        {
+            return linkTag.Attributes.FirstOrDefault(x =>
+                x.Name.Equals(attr, StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }

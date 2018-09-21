@@ -63,7 +63,6 @@ namespace BackSide2.Controllers
             {
                 var userEmail = User.FindFirstValue(ClaimTypes.Email);
                 var resopnsePlayload = await _boardService.DeleteBoardAsync(model, userEmail);
-                //var cls = User.Claims.ToArray();
                 return Ok(resopnsePlayload);
             }
             catch (Exception ex)

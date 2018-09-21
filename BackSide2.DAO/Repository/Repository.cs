@@ -35,13 +35,14 @@ namespace BackSide2.DAO.Repository
         public async Task<T> GetAsync(long id) =>
             await _entities.FirstOrDefaultAsync(e => e.Id == id);
 
-        public async Task InsertAsync(T entity)
+        public async Task<T> InsertAsync(T entity)
         {
             if (entity == null)
                 throw new NullReferenceException();
                 
             _entities.Add(entity);
             await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task UpdateAsync(T entity)
@@ -54,7 +55,7 @@ namespace BackSide2.DAO.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(T entity)
+        public async Task<T> RemoveAsync(T entity)
         {
             if (entity == null)
             {
@@ -62,17 +63,8 @@ namespace BackSide2.DAO.Repository
             }
 
             _entities.Remove(entity);
-            _context.SaveChanges();
-        }
-
-        public async Task RemoveAsync(T entity)
-        {
-            if (entity == null)
-                throw new NullReferenceException();
-
-            _entities.Remove(entity);
-
             await _context.SaveChangesAsync();
+            return entity;
         }
 
         //public async Task SaveChangesAsync()

@@ -85,7 +85,7 @@ namespace BackSide2.BL.BoardService
                 throw new PinServiceException("Board not found.");
             }
 
-            await _boardService.DeleteAsync(board);
+            await _boardService.RemoveAsync(board);
             return board;
         }
 

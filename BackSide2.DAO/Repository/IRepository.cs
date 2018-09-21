@@ -10,10 +10,9 @@ namespace BackSide2.DAO.Repository
     {
         Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null);
         Task<T> GetAsync(long id);
-        Task InsertAsync(T entity);
+        Task<T> InsertAsync(T entity);
         Task UpdateAsync(T entity);
-        Task DeleteAsync(T entity);
-        Task RemoveAsync(T entity);
+        Task<T> RemoveAsync(T entity);
         //Task SaveChangesAsync();
 
     }
