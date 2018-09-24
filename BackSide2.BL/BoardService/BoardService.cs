@@ -30,16 +30,10 @@ namespace BackSide2.BL.BoardService
         }
 
 
-        public async Task<object> AddBoardAsync(
-            AddBoardDto model, string userEmail
-        )
+        public async Task<object> AddBoardAsync(AddBoardDto model, long userId)
         {
-            var personId =
-                (await _personService.GetAllAsync(d => d.Email == userEmail))
-                .FirstOrDefaultAsync().Result.Id;
-
             Board boardInDb =
-                await (await _boardService.GetAllAsync(d => d.Name == model.Name && d.UserId == personId))
+                await (await _boardService.GetAllAsync(d => d.Name == model.Name && d.UserId == userId))
                     .FirstOrDefaultAsync();
 
             if (boardInDb != null)
@@ -47,22 +41,16 @@ namespace BackSide2.BL.BoardService
                 throw new BoardServiceException("Board with such name already added.");
             }
 
-            Board boardToAdd = model.toBoard(personId);
+            Board boardToAdd = model.toBoard(userId);
 
             var board = await _boardService.InsertAsync(boardToAdd);
             return new {board};
         }
 
-        public async Task<object> DeleteBoardAsync(
-            DeleteBoardDto model, string userEmail
-        )
+        public async Task<object> DeleteBoardAsync(DeleteBoardDto model, long userId)
         {
-            var personId =
-                (await _personService.GetAllAsync(d => d.Email == userEmail))
-                .FirstOrDefaultAsync().Result.Id;
-
             Board boardInDb =
-                await (await _boardService.GetAllAsync(d => d.Name == model.Name && d.UserId == personId))
+                await (await _boardService.GetAllAsync(d => d.Id == model.Id && d.UserId == userId))
                     .FirstOrDefaultAsync();
 
             if (boardInDb == null)
@@ -70,16 +58,16 @@ namespace BackSide2.BL.BoardService
                 throw new BoardServiceException("Board not found.");
             }
 
-            var board = await _boardService.RemoveAsync(boardInDb);
+            var board = (await _boardService.RemoveAsync(boardInDb)).toBoardReturnDto();
             return new {board};
         }
 
         public async Task<object> GetBoardsAsync(
-            string userEmail
+            long userId
         )
         {
             var personId =
-                (await _personService.GetAllAsync(d => d.Email == userEmail))
+                (await _personService.GetAllAsync(d => d.Id == userId))
                 .FirstOrDefaultAsync().Result.Id;
 
             var boards =

@@ -70,10 +70,10 @@ namespace BackSide2.BL.authorize
             else
                 throw new TokenServiceException("SystemUserNotFound");
 
-            await _personService.InsertAsync(personToRegister);
+            var newUser = await _personService.InsertAsync(personToRegister);
             return new
             {
-                token = GenerateJwtToken(model.Username, newbieRole.ToString(), model.Username),
+                token = GenerateJwtToken(model.Username, newbieRole.ToString(), model.Username, newUser.Id),
                 username = personToRegister.UserName,
                 email = personToRegister.Email,
                 Role = personToRegister.Role.ToString(),
@@ -91,7 +91,7 @@ namespace BackSide2.BL.authorize
                     .FirstOrDefaultAsync();
             if (person != null) return new
             {
-                token = GenerateJwtToken(person.Email, person.Role.ToString(), person.UserName),
+                token = GenerateJwtToken(person.Email, person.Role.ToString(), person.UserName, person.Id),
                 username = person.UserName,
                 email = person.Email,
                 Role = person.Role.ToString(),
@@ -113,13 +113,15 @@ namespace BackSide2.BL.authorize
         private object GenerateJwtToken(
             string email,
             string role,
-            string login
+            string login,
+            long id
         )
         {
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Email, email),
                 new Claim(JwtRegisteredClaimNames.UniqueName, login),
+                new Claim(JwtRegisteredClaimNames.Sub, id.ToString()),
                 new Claim("role" , role),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };

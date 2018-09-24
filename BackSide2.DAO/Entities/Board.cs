@@ -13,5 +13,8 @@ namespace BackSide2.DAO.Entities
         [DefaultValue(null)] public string Description { get; set; }
         [DefaultValue(null)] public string Img { get; set; }
         [DefaultValue(false)] public bool IsPrivate { get; set; }
+
+        public ICollection<BoardPin> BoardPins { get; set; }
+        //public ICollection<Pin> Pins { get; set; }
     }
 }

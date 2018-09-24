@@ -3,6 +3,7 @@ using BackSide2.BL.BoardService;
 using BackSide2.BL.ParsePageService;
 using BackSide2.BL.PinService;
 using BackSide2.DAO.Repository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BackSide2.Extentions
@@ -12,6 +13,7 @@ namespace BackSide2.Extentions
         public static void AddRepository(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            serviceCollection.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         public static void AddScopedServices(this IServiceCollection serviceCollection)

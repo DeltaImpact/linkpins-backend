@@ -6,15 +6,15 @@ namespace BackSide2.BL.PinService
     public interface IBoardService
     {
         Task<object> AddBoardAsync(
-            AddBoardDto model, string userEmail
+            AddBoardDto model, long userId
         );
 
         Task<object> DeleteBoardAsync(
-            DeleteBoardDto model, string userEmail
+            DeleteBoardDto model, long userId
         );
 
         Task<object> GetBoardsAsync(
-            string userEmail
+            long userId
         );
     }
 }

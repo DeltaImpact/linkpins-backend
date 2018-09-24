@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BackSide2.BL.authorize;
 using BackSide2.BL.BoardService;
 using BackSide2.BL.Entity;
+using BackSide2.BL.Entity.PinDto;
 using BackSide2.BL.PinService;
 using BackSide2.DAO.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -16,12 +17,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BackSide2.Controllers
 {
-    [Route("board")]
+    [Route("pin")]
     [ApiController]
-    public class DeskController : Controller
+    public class PinController : Controller
     {
         private readonly IBoardService _boardService;
-        public DeskController(IBoardService boardService
+        public PinController(IBoardService boardService
         )
         {
             _boardService = boardService;
@@ -35,16 +36,17 @@ namespace BackSide2.Controllers
         }
 
         [Authorize]
-        [HttpPost("addBoard")]
-        public async Task<IActionResult> AddBoard(
-            AddBoardDto model
+        [HttpPost("addPin")]
+        public async Task<IActionResult> AddPin(
+            AddPinDto model
         )
         {
             try
             {
                 long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var resopnsePlayload = await _boardService.AddBoardAsync(model, userId);
+                //var resopnsePlayload = await _boardService.AddBoardAsync(model, userId);
                 //var cls = User.Claims.ToArray();
+                var resopnsePlayload = "";
                 return Ok(resopnsePlayload);
             }
             catch (Exception ex)
@@ -54,8 +56,8 @@ namespace BackSide2.Controllers
         }
 
         //[Authorize]
-        [HttpPost("deleteBoard")]
-        public async Task<IActionResult> DeleteBoard(
+        [HttpPost("deletePin")]
+        public async Task<IActionResult> DeletePin(
             DeleteBoardDto model
         )
         {
@@ -72,8 +74,8 @@ namespace BackSide2.Controllers
         }
 
         [Authorize]
-        [HttpPost("getBoards")]
-        public async Task<IActionResult> GetBoards()
+        [HttpPost("getPins")]
+        public async Task<IActionResult> GetPins()
         {
             try
             {

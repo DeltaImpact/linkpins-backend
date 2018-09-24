@@ -12,7 +12,6 @@ namespace BackSide2.DAO.Entities
         [DefaultValue(null)] public string FirstName { get; set; }
         [DefaultValue(null)] public string Surname { get; set; }
         public bool? Gender { get; set; }
-
         public uint? Language { get; set; }
     }
 
