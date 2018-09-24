@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BackSide2.BL.authorize;
 using BackSide2.BL.Entity;
+using BackSide2.BL.Extentions;
 using BackSide2.DAO.Entities;
 using Microsoft.AspNetCore.Authorization;
 
@@ -73,18 +74,8 @@ namespace BackSide2.Controllers
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
 
-            var userBD = (Person) await _tokenService.GetUserProfileInfo(userEmail);
-
-            var user = new
-            {
-                UserName = userBD.UserName,
-                Email = userBD.Email,
-                Role = userBD.Role.ToString(),
-                FirstName = userBD.FirstName,
-                Surname = userBD.Surname,
-                Gender = userBD.Gender,
-                Language = userBD.Language
-            };
+            var userBd = (Person) await _tokenService.GetUserProfileInfo(userEmail);
+            var user = userBd.toProfileOwnReturnDto();
             return Ok(user);
         }
 

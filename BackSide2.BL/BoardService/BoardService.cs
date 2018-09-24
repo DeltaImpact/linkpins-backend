@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using BackSide2.BL.authorize;
 using BackSide2.BL.Entity;
 using BackSide2.BL.Exceptions;
+using BackSide2.BL.Extentions;
 using BackSide2.BL.PinService;
 using BackSide2.DAO.Entities;
 using BackSide2.DAO.Repository;
@@ -46,18 +47,10 @@ namespace BackSide2.BL.BoardService
                 throw new BoardServiceException("Board with such name already added.");
             }
 
-            Board boardToAdd = new Board
-            {
-                UserId = personId,
-                Name = model.Name,
-                Description = model.Description,
-                Img = model.Img,
-                IsPrivate = model.IsPrivate,
-                CreatedBy = personId
-            };
+            Board boardToAdd = model.toBoard(personId);
 
             var board = await _boardService.InsertAsync(boardToAdd);
-            return new { board };
+            return new {board};
         }
 
         public async Task<object> DeleteBoardAsync(
@@ -85,26 +78,13 @@ namespace BackSide2.BL.BoardService
             string userEmail
         )
         {
-            //Person person =
-            //    await (await _personService.GetAllAsync(d => d.Email == userEmail))
-            //        .FirstOrDefaultAsync();
             var personId =
                 (await _personService.GetAllAsync(d => d.Email == userEmail))
                 .FirstOrDefaultAsync().Result.Id;
 
-            //var personId2 =
-            //    await (await _personService.GetAllAsync(d => d.Email == userEmail))
-            //        .FirstOrDefaultAsync().Id;
             var boards =
-                (await _boardService.GetAllAsync(d => d.UserId == personId)).Select(o => new
-                {
-                    Name = o.Name,
-                    Description = o.Description,
-                    Img = o.Img,
-                    IsPrivate = o.IsPrivate,
-                    Created = o.Created,
-                }).ToList();
-
+                (await _boardService.GetAllAsync(d => d.UserId == personId)).Select(o => o.toBoardReturnDto()
+                ).ToList();
 
             return boards;
         }

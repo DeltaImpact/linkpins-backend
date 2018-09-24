@@ -78,13 +78,14 @@ namespace BackSide2.Controllers
             try
             {
                 var userEmail = User.FindFirstValue(ClaimTypes.Email);
-                var resopnsePlayload = await _boardService.GetBoardsAsync(userEmail);
+                var responsePayload = await _boardService.GetBoardsAsync(userEmail);
+                
                 //var id = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var cls = User.Claims.ToArray();
                 var asd = cls;
                 //await _debtService.RemoveDebtAsync(model, id);
                 //return Ok(resopnsePlayload);
-                return Ok(resopnsePlayload);
+                return Ok(responsePayload);
             }
             catch (Exception ex)
             {
