@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using BackSide2.BL.Entity;
 using BackSide2.BL.Entity.AuthorizeDto;
+using BackSide2.BL.Entity.BoardDto;
 using BackSide2.DAO.Entities;
 
 namespace BackSide2.BL.Extentions
@@ -20,6 +21,21 @@ namespace BackSide2.BL.Extentions
                 IsPrivate = board.IsPrivate,
                 Modified = board.Modified,
                 Created = board.Created,
+            };
+        }
+        public static BoardReturnDto toBoardReturnDto(this Board board, List<Pin> pins, bool? isOwner)
+        {
+            return new BoardReturnDto()
+            {
+                Id = board.Id,
+                Name = board.Name,
+                Description = board.Description,
+                Img = board.Img,
+                IsPrivate = board.IsPrivate,
+                Modified = board.Modified,
+                Created = board.Created,
+                Pins = pins,
+                isOwner = isOwner
             };
         }
     }

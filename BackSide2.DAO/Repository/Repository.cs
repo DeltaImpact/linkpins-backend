@@ -29,8 +29,18 @@ namespace BackSide2.DAO.Repository
         //    return _entities.AsQueryable();
         //}
 
-        public async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null) =>
-            await Task.Run(() => predicate != null ? _entities.Where(predicate) : _entities);
+        //public async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null) =>
+        //    await Task.Run(() => predicate != null ? _entities.Where(predicate) : _entities);
+
+        public async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includes)
+        {
+            return await Task.Run(() =>
+            {
+                var result = this._entities.AsQueryable();
+                if (includes != null) result = includes.Aggregate(result, (current, expression) => current.Include(expression));
+                return predicate != null ? result.Where(predicate) : result;
+            });
+        }
 
         public async Task<T> GetAsync(long id) =>
             await _entities.FirstOrDefaultAsync(e => e.Id == id);
@@ -39,7 +49,7 @@ namespace BackSide2.DAO.Repository
         {
             if (entity == null)
                 throw new NullReferenceException();
-                
+
             _entities.Add(entity);
             await _context.SaveChangesAsync();
             return entity;

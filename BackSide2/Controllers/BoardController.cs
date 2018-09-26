@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BackSide2.BL.authorize;
 using BackSide2.BL.BoardService;
 using BackSide2.BL.Entity;
+using BackSide2.BL.Entity.BoardDto;
 using BackSide2.BL.PinService;
 using BackSide2.DAO.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -21,17 +22,28 @@ namespace BackSide2.Controllers
     public class DeskController : Controller
     {
         private readonly IBoardService _boardService;
+
         public DeskController(IBoardService boardService
         )
         {
             _boardService = boardService;
         }
 
-        // GET: api/<controller>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
         {
-            return new string[] {"value1", "value2"};
+            try
+            {
+                long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var resopnsePlayload = await _boardService.GetBoardAsync(id, userId);
+                //var cls = User.Claims.ToArray();
+                return Ok(resopnsePlayload);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
         }
 
         [Authorize]
@@ -67,7 +79,7 @@ namespace BackSide2.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new {ex.Message});
             }
         }
 
@@ -80,14 +92,14 @@ namespace BackSide2.Controllers
                 long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var responsePayload = await _boardService.GetBoardsAsync(userId);
                 return Ok(responsePayload);
-                
+
                 //long userId = (long)Convert.ToInt64(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 //var cls = User.Claims.ToArray();
                 //var asd = cls;
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new {ex.Message});
             }
         }
     }

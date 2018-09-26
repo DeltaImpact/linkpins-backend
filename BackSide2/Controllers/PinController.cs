@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BackSide2.BL.authorize;
 using BackSide2.BL.BoardService;
 using BackSide2.BL.Entity;
+using BackSide2.BL.Entity.BoardDto;
 using BackSide2.BL.Entity.PinDto;
 using BackSide2.BL.PinService;
 using BackSide2.DAO.Entities;
@@ -22,20 +23,31 @@ namespace BackSide2.Controllers
     public class PinController : Controller
     {
         private readonly IBoardService _boardService;
-        public PinController(IBoardService boardService
-        )
+        private readonly IPinService _pinService;
+        public PinController(IBoardService boardService, IPinService pinService)
         {
             _boardService = boardService;
-        }
-
-        // GET: api/<controller>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] {"value1", "value2"};
+            _pinService = pinService;
         }
 
         [Authorize]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            try
+            {
+                long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var resopnsePlayload = await _pinService.GetPinAsync(id, userId);
+                //var cls = User.Claims.ToArray();
+                return Ok(resopnsePlayload);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+        [Authorize]                 
         [HttpPost("addPin")]
         public async Task<IActionResult> AddPin(
             AddPinDto model
@@ -44,9 +56,9 @@ namespace BackSide2.Controllers
             try
             {
                 long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                //var resopnsePlayload = await _boardService.AddBoardAsync(model, userId);
+                var resopnsePlayload = await _pinService.AddPinAsync(model, userId);
                 //var cls = User.Claims.ToArray();
-                var resopnsePlayload = "";
+                //var resopnsePlayload = "";
                 return Ok(resopnsePlayload);
             }
             catch (Exception ex)

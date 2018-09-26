@@ -18,7 +18,34 @@ namespace BackSide2.BL.Extentions
                 IsPrivate = model.IsPrivate,
                 CreatedBy = personId
             };
-            board.UserId = personId;
+            board.Person.Id = personId;
+            return board;
+        }
+
+        public static Board toBoard(this AddBoardDto model, Person person)
+        {
+            var board = new Board()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                Img = model.Img,
+                IsPrivate = model.IsPrivate,
+                CreatedBy = person.Id
+            };
+            board.Person = person;
+            return board;
+        }
+
+        public static Board toBoard(this AddBoardDto model)
+        {
+            var board = new Board()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                Img = model.Img,
+                IsPrivate = model.IsPrivate,
+            };
+            //board.UserId = personId;
             return board;
         }
     }

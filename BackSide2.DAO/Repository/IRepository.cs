@@ -8,7 +8,9 @@ namespace BackSide2.DAO.Repository
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null);
+        //Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null);
+        Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate,
+            params Expression<Func<T, object>>[] includes);
         Task<T> GetAsync(long id);
         Task<T> InsertAsync(T entity);
         Task UpdateAsync(T entity);

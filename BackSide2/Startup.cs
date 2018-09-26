@@ -65,6 +65,7 @@ namespace BackSide2
             services.AddRepository();
             services.AddScopedServices();
             services.AddCors();
+            services.AddHttpContextAccessor();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

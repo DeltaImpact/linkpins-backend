@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BackSide2.BL.Entity;
+using BackSide2.BL.Entity.BoardDto;
 
 namespace BackSide2.BL.PinService
 {
@@ -11,6 +12,11 @@ namespace BackSide2.BL.PinService
 
         Task<object> DeleteBoardAsync(
             DeleteBoardDto model, long userId
+        );
+
+        Task<object> GetBoardAsync(
+            int boardId,
+            long personId
         );
 
         Task<object> GetBoardsAsync(

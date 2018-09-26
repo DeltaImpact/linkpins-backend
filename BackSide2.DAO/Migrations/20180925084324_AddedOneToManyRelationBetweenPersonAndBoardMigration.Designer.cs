@@ -4,14 +4,16 @@ using BackSide2.DAO.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BackSide2.DAO.Data.Migrations
+namespace BackSide2.DAO.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20180925084324_AddedOneToManyRelationBetweenPersonAndBoardMigration")]
+    partial class AddedOneToManyRelationBetweenPersonAndBoardMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,6 +119,8 @@ namespace BackSide2.DAO.Data.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("BoardId");
 
                     b.Property<DateTime>("Created");
 

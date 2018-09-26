@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace BackSide2.DAO.Entities
@@ -13,6 +14,8 @@ namespace BackSide2.DAO.Entities
         [DefaultValue(null)] public string Surname { get; set; }
         public bool? Gender { get; set; }
         public uint? Language { get; set; }
+
+        public ICollection<Board> Boards { get; set; }
     }
 
     public enum Role
