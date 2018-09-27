@@ -67,7 +67,7 @@ namespace BackSide2.Controllers
             }
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost("deletePin")]
         public async Task<IActionResult> DeletePin(
             DeleteBoardDto model
@@ -76,7 +76,7 @@ namespace BackSide2.Controllers
             try
             {
                 long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var resopnsePlayload = await _boardService.DeleteBoardAsync(model, userId);
+                var resopnsePlayload = await _boardService.DeleteBoardAsync(model);
                 return Ok(resopnsePlayload);
             }
             catch (Exception ex)
@@ -85,24 +85,43 @@ namespace BackSide2.Controllers
             }
         }
 
-        [Authorize]
-        [HttpPost("getPins")]
-        public async Task<IActionResult> GetPins()
-        {
-            try
-            {
-                long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var responsePayload = await _boardService.GetBoardsAsync(userId);
-                return Ok(responsePayload);
+        //[Authorize]
+        //[HttpPost("updatePin")]
+        //public async Task<IActionResult> updatePin(
+        //    UpdateBoardDto model
+        //)
+        //{
+        //    try
+        //    {
+        //        //long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        //        //var resopnsePlayload = await _boardService.DeleteBoardAsync(model, userId);
+        //        var resopnsePlayload = "";
+        //        return Ok(resopnsePlayload);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { ex.Message });
+        //    }
+        //}
+
+        //[Authorize]
+        //[HttpPost("getPins")]
+        //public async Task<IActionResult> GetPins()
+        //{
+        //    try
+        //    {
+        //        long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        //        var responsePayload = await _boardService.GetBoardsAsync();
+        //        return Ok(responsePayload);
                 
-                //long userId = (long)Convert.ToInt64(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                //var cls = User.Claims.ToArray();
-                //var asd = cls;
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { ex.Message });
-            }
-        }
+        //        //long userId = (long)Convert.ToInt64(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        //        //var cls = User.Claims.ToArray();
+        //        //var asd = cls;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { ex.Message });
+        //    }
+        //}
     }
 }

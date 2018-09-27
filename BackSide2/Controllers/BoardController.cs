@@ -35,9 +35,7 @@ namespace BackSide2.Controllers
         {
             try
             {
-                long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var resopnsePlayload = await _boardService.GetBoardAsync(id, userId);
-                //var cls = User.Claims.ToArray();
+                var resopnsePlayload = await _boardService.GetBoardAsync(id);
                 return Ok(resopnsePlayload);
             }
             catch (Exception ex)
@@ -54,27 +52,7 @@ namespace BackSide2.Controllers
         {
             try
             {
-                long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var resopnsePlayload = await _boardService.AddBoardAsync(model, userId);
-                //var cls = User.Claims.ToArray();
-                return Ok(resopnsePlayload);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new {ex.Message});
-            }
-        }
-
-        //[Authorize]
-        [HttpPost("deleteBoard")]
-        public async Task<IActionResult> DeleteBoard(
-            DeleteBoardDto model
-        )
-        {
-            try
-            {
-                long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var resopnsePlayload = await _boardService.DeleteBoardAsync(model, userId);
+                var resopnsePlayload = await _boardService.AddBoardAsync(model);
                 return Ok(resopnsePlayload);
             }
             catch (Exception ex)
@@ -84,13 +62,46 @@ namespace BackSide2.Controllers
         }
 
         [Authorize]
+        [HttpPost("deleteBoard")]
+        public async Task<IActionResult> DeleteBoard(
+            DeleteBoardDto model
+        )
+        {
+            try
+            {
+                var resopnsePlayload = await _boardService.DeleteBoardAsync(model);
+                return Ok(resopnsePlayload);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {ex.Message});
+            }
+        }
+
+        [Authorize]
+        [HttpPost("updateBoard")]
+        public async Task<IActionResult> UpdateBoard(
+            UpdateBoardDto model
+        )
+        {
+            try
+            {
+                var resopnsePlayload = await _boardService.UpdateBoardAsync(model);
+                return Ok(resopnsePlayload);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+        [Authorize]
         [HttpPost("getBoards")]
         public async Task<IActionResult> GetBoards()
         {
             try
             {
-                long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var responsePayload = await _boardService.GetBoardsAsync(userId);
+                var responsePayload = await _boardService.GetBoardsAsync();
                 return Ok(responsePayload);
 
                 //long userId = (long)Convert.ToInt64(User.FindFirstValue(ClaimTypes.NameIdentifier));

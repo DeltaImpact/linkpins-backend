@@ -55,7 +55,7 @@ namespace BackSide2.DAO.Repository
             return entity;
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
             if (entity == null)
                 throw new NullReferenceException();
@@ -63,6 +63,7 @@ namespace BackSide2.DAO.Repository
             _entities.Update(entity);
 
             await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<T> RemoveAsync(T entity)

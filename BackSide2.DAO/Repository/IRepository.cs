@@ -13,7 +13,7 @@ namespace BackSide2.DAO.Repository
             params Expression<Func<T, object>>[] includes);
         Task<T> GetAsync(long id);
         Task<T> InsertAsync(T entity);
-        Task UpdateAsync(T entity);
+        Task<T> UpdateAsync(T entity);
         Task<T> RemoveAsync(T entity);
         //Task SaveChangesAsync();
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using BackSide2.BL.Entity;
+using BackSide2.BL.Entity.BoardDto;
 using BackSide2.DAO.Entities;
 
 namespace BackSide2.BL.Extentions
