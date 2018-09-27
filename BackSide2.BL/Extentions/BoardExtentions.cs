@@ -4,13 +4,14 @@ using System.Text;
 using BackSide2.BL.Entity;
 using BackSide2.BL.Entity.AuthorizeDto;
 using BackSide2.BL.Entity.BoardDto;
+using BackSide2.BL.Entity.PinDto;
 using BackSide2.DAO.Entities;
 
 namespace BackSide2.BL.Extentions
 {
     public static class BoardExtentions
     {
-        public static BoardReturnDto toBoardReturnDto(this Board board)
+        public static BoardReturnDto ToBoardReturnDto(this Board board)
         {
             return new BoardReturnDto()
             {
@@ -23,7 +24,7 @@ namespace BackSide2.BL.Extentions
                 Created = board.Created,
             };
         }
-        public static BoardReturnDto toBoardReturnDto(this Board board, List<Pin> pins, bool? isOwner)
+        public static BoardReturnDto ToBoardReturnDto(this Board board, List<PinReturnDto> pins, bool? isOwner)
         {
             return new BoardReturnDto()
             {

@@ -5,7 +5,7 @@ namespace BackSide2.BL.Extentions
 {
     public static class UpdateBoardDtoExtentions
     {
-        public static Board toBoard(this UpdateBoardDto model, Board board, long modifiedBy)
+        public static Board ToBoard(this UpdateBoardDto model, Board board, long modifiedBy)
         {
             board.Name = model.Name;
             board.Description = model.Description;

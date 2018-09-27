@@ -23,7 +23,7 @@ namespace BackSide2.BL.Extentions
         //    return board;
         //}
 
-        public static Pin toPin(this AddPinDto model, Person person)
+        public static Pin ToPin(this AddPinDto model, Person person)
         {
             var pin = new Pin()
             {

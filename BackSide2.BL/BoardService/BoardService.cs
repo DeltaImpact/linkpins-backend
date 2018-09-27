@@ -47,9 +47,9 @@ namespace BackSide2.BL.BoardService
                 throw new BoardServiceException("Board with such name already added.");
             }
 
-            Board boardToAdd = model.toBoard(usr);
+            Board boardToAdd = model.ToBoard(usr);
 
-            var board = (await _boardService.InsertAsync(boardToAdd)).toBoardReturnDto();
+            var board = (await _boardService.InsertAsync(boardToAdd)).ToBoardReturnDto();
 
             return new {board};
         }
@@ -66,7 +66,7 @@ namespace BackSide2.BL.BoardService
                 throw new BoardServiceException("Board not found.");
             }
 
-            var board = (await _boardService.RemoveAsync(boardInDb)).toBoardReturnDto();
+            var board = (await _boardService.RemoveAsync(boardInDb)).ToBoardReturnDto();
             return new {board};
         }
 
@@ -87,7 +87,7 @@ namespace BackSide2.BL.BoardService
                 throw new BoardServiceException("Board with same name already exist.");
             }
             var board =
-                await _boardService.UpdateAsync(model.toBoard(boardOld, userId));
+                await _boardService.UpdateAsync(model.ToBoard(boardOld, userId));
             return new { board };
         }
 
@@ -97,7 +97,7 @@ namespace BackSide2.BL.BoardService
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var pins =
-                await (await _boardPinService.GetAllAsync(d => d.Board.Id == boardId, x => x.Pin)).Select(e => e.Pin)
+                await (await _boardPinService.GetAllAsync(d => d.Board.Id == boardId, x => x.Pin)).Select(e => e.Pin.ToPinReturnDto())
                     .ToListAsync();
 
             var board =
@@ -114,14 +114,14 @@ namespace BackSide2.BL.BoardService
                 throw new BoardServiceException("Board not found.");
             }
 
-            return board.toBoardReturnDto(pins, isOwner);
+            return board.ToBoardReturnDto(pins, isOwner);
         }
 
         public async Task<object> GetBoardsAsync()
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var boards = (await _personService.GetAllAsync(d => d.Id == userId, x => x.Boards)).FirstOrDefault()?.Boards
-                .Select(o => o.toBoardReturnDto()
+                .Select(o => o.ToBoardReturnDto()
                 ).ToList();
             return boards;
         }

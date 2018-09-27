@@ -9,7 +9,7 @@ namespace BackSide2.BL.Extentions
 {
     public static class PersonExtentions
     {
-        public static ProfileOwnReturnDto toProfileOwnReturnDto(this Person person)
+        public static ProfileOwnReturnDto ToProfileOwnReturnDto(this Person person)
         {
             return new ProfileOwnReturnDto()
             {

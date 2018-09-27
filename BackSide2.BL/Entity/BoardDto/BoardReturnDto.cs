@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BackSide2.BL.Entity.PinDto;
 using BackSide2.DAO.Entities;
 
 namespace BackSide2.BL.Entity.BoardDto
@@ -14,6 +15,6 @@ namespace BackSide2.BL.Entity.BoardDto
         public bool? IsPrivate { get; set; }
         public DateTime? Modified { get; set; }
         public DateTime? Created { get; set; }
-        public List<Pin> Pins {get; set; }
+        public List<PinReturnDto> Pins {get; set; }
     }
 }

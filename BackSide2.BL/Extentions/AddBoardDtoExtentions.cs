@@ -9,7 +9,7 @@ namespace BackSide2.BL.Extentions
 {
     public static class AddBoardDtoExtentions
     {
-        public static Board toBoard(this AddBoardDto model, long personId)
+        public static Board ToBoard(this AddBoardDto model, long personId)
         {
             var board = new Board()
             {
@@ -23,7 +23,7 @@ namespace BackSide2.BL.Extentions
             return board;
         }
 
-        public static Board toBoard(this AddBoardDto model, Person person)
+        public static Board ToBoard(this AddBoardDto model, Person person)
         {
             var board = new Board()
             {
@@ -37,7 +37,7 @@ namespace BackSide2.BL.Extentions
             return board;
         }
 
-        public static Board toBoard(this AddBoardDto model)
+        public static Board ToBoard(this AddBoardDto model)
         {
             var board = new Board()
             {

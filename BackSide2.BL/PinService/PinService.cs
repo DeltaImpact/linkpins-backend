@@ -41,7 +41,7 @@ namespace BackSide2.BL.PinService
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var usr = await (await _personService.GetAllAsync(d => d.Id == personId)).FirstOrDefaultAsync();
 
-            Pin pinToAdd = model.toPin(usr);
+            Pin pinToAdd = model.ToPin(usr);
 
             var pin = await _pinService.InsertAsync(pinToAdd);
             Board boardInDb =
@@ -78,10 +78,10 @@ namespace BackSide2.BL.PinService
             }
 
             var boards =
-                await (await _boardPinService.GetAllAsync(d => d.Pin.Id == pinId, x => x.Board)).Select(e => e.Board.toBoardReturnDto()).ToListAsync();
+                await (await _boardPinService.GetAllAsync(d => d.Pin.Id == pinId, x => x.Board)).Select(e => e.Board.ToBoardReturnDto()).ToListAsync();
 
 
-            return pin.toPinReturnDto(boards);
+            return pin.ToPinReturnDto(boards);
         }
     }
 }
