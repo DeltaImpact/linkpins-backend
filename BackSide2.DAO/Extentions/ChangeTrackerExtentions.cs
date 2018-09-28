@@ -22,7 +22,6 @@ namespace BackSide2.DAO.Extentions
 
                     case EntityState.Added:
                         baseAudit.Created = now;
-                        baseAudit.Modified = null;
                         break;
                 }
             }

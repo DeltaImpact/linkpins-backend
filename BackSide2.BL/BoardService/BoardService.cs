@@ -82,7 +82,7 @@ namespace BackSide2.BL.BoardService
 
             var boardWithSameName =
                 await (await _boardService.GetAllAsync(d => d.Name == model.Name)).FirstOrDefaultAsync();
-            if (boardWithSameName != null)
+            if (boardWithSameName != null && model.Id != boardWithSameName.Id)
             {
                 throw new BoardServiceException("Board with same name already exist.");
             }

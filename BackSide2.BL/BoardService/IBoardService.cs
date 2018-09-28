@@ -20,5 +20,6 @@ namespace BackSide2.BL.BoardService
         Task<object> GetBoardAsync(int boardId);
 
         Task<object> GetBoardsAsync();
+ 
     }
 }

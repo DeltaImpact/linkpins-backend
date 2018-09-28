@@ -25,7 +25,8 @@ namespace BackSide2.BL.PinService
             IConfiguration configuration,
             IRepository<Board> boardService,
             IRepository<Person> personService,
-            IRepository<Pin> pinService, IRepository<BoardPin> boardPinService, IHttpContextAccessor httpContextAccessor)
+            IRepository<Pin> pinService, IRepository<BoardPin> boardPinService,
+            IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
             _boardService = boardService;
@@ -36,16 +37,16 @@ namespace BackSide2.BL.PinService
         }
 
 
-        public async Task<object> AddPinAsync(AddPinDto model, long personId)
+        public async Task<object> AddPinAsync(AddPinDto model)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var usr = await (await _personService.GetAllAsync(d => d.Id == personId)).FirstOrDefaultAsync();
+            var usr = await (await _personService.GetAllAsync(d => d.Id == userId)).FirstOrDefaultAsync();
 
             Pin pinToAdd = model.ToPin(usr);
 
             var pin = await _pinService.InsertAsync(pinToAdd);
             Board boardInDb =
-                await (await _boardService.GetAllAsync(d => d.Id == model.BoardId && d.Person.Id == personId))
+                await (await _boardService.GetAllAsync(d => d.Id == model.BoardId && d.Person.Id == userId))
                     .FirstOrDefaultAsync();
 
             BoardPin relation = new BoardPin
@@ -55,21 +56,13 @@ namespace BackSide2.BL.PinService
                 Board = boardInDb
             };
 
-            var relatBoardPin = await _boardPinService.InsertAsync(relation);
-            //var boards = (await _personService.GetAllAsync(d => d.Id == personId, x => x.Boards)).FirstOrDefault()?.Boards
-            //    .Select(d => d.Id == model.BoardId && d.Person.Id == personId);
-            //var boardPinInDb =
-            //    (await (await _boardPinService.GetAllAsync(d => d.Id == relatBoardPin.Id, x => x.Board, y => y.Pin))
-            //        .FirstOrDefaultAsync());
-            //var resultpin = boardPinInDb.Pin.toPinReturnDto();
-            return new { pin.Id };
-            //throw new System.NotImplementedException();
+            return new {pin.Id};
         }
 
-        public async Task<object> GetPinAsync(int pinId, long personId)
+        public async Task<object> GetPinAsync(int pinId)
         {
             var pin =
-                await(await _pinService.GetAllAsync(d => d.Id == pinId, x => x.BoardPins))
+                await (await _pinService.GetAllAsync(d => d.Id == pinId, x => x.BoardPins))
                     .FirstOrDefaultAsync();
 
             if (pin == null)
@@ -78,10 +71,49 @@ namespace BackSide2.BL.PinService
             }
 
             var boards =
-                await (await _boardPinService.GetAllAsync(d => d.Pin.Id == pinId, x => x.Board)).Select(e => e.Board.ToBoardReturnDto()).ToListAsync();
+                await (await _boardPinService.GetAllAsync(d => d.Pin.Id == pinId, x => x.Board))
+                    .Select(e => e.Board.ToBoardReturnDto()).ToListAsync();
 
 
             return pin.ToPinReturnDto(boards);
+        }
+
+        public async Task<object> DeletePinAsync(DeletePinDto model)
+        {
+            var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var usr = await (await _personService.GetAllAsync(d => d.Id == userId)).FirstOrDefaultAsync();
+
+            var pin =
+                await (await _pinService.GetAllAsync(d => d.Id == model.Id, x => x.BoardPins))
+                    .FirstOrDefaultAsync();
+
+            if (pin == null)
+            {
+                throw new BoardServiceException("Pin not found.");
+            }
+
+            var allPinConnections = await (await _boardPinService.GetAllAsync(d => d.Pin == pin)).ToListAsync();
+            foreach (var pinConnection in allPinConnections)
+            {
+                var boardPin = (await _boardPinService.RemoveAsync(pinConnection));
+            }
+
+            var removedPin = (await _pinService.RemoveAsync(pin));
+            return removedPin.ToPinReturnDto();
+        }
+
+        public async Task<object> UpdatePinAsync(UpdatePinDto model)
+        {
+            var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var pinOld =
+                await(await _pinService.GetAllAsync(d => d.Id == model.Id)).FirstOrDefaultAsync();
+            if (pinOld == null)
+            {
+                throw new BoardServiceException("Pin not found.");
+            }
+            var board =
+                await _pinService.UpdateAsync(model.ToPin(pinOld, userId));
+            return new { board };
         }
     }
 }

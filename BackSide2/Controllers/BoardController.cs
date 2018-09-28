@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using BackSide2.BL.authorize;
 using BackSide2.BL.BoardService;
-using BackSide2.BL.Entity;
 using BackSide2.BL.Entity.BoardDto;
-using BackSide2.BL.PinService;
-using BackSide2.DAO.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +32,7 @@ namespace BackSide2.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new {ex.Message});
             }
         }
 
@@ -91,7 +83,7 @@ namespace BackSide2.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new {ex.Message});
             }
         }
 
@@ -103,10 +95,6 @@ namespace BackSide2.Controllers
             {
                 var responsePayload = await _boardService.GetBoardsAsync();
                 return Ok(responsePayload);
-
-                //long userId = (long)Convert.ToInt64(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                //var cls = User.Claims.ToArray();
-                //var asd = cls;
             }
             catch (Exception ex)
             {

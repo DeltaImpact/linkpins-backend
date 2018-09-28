@@ -73,7 +73,6 @@ namespace BackSide2.Controllers
         )
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
-
             var userBd = (Person) await _tokenService.GetUserProfileInfo(userEmail);
             var user = userBd.ToProfileOwnReturnDto();
             return Ok(user);
