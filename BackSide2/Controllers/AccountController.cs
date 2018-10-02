@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using BackSide2.BL.authorize;
 using BackSide2.BL.Entity;
 using BackSide2.BL.Extentions;
+using BackSide2.BL.Models.AuthorizeDto;
+using BackSide2.BL.Models.ProfileDto;
+using BackSide2.BL.ProfileService;
 using BackSide2.DAO.Entities;
 using Microsoft.AspNetCore.Authorization;
 
@@ -16,23 +19,12 @@ namespace BackSide2.Controllers
     public class AccountController : ControllerBase
     {
         private readonly ITokenService _tokenService;
+        private readonly IProfileService _profileService;
 
-        public AccountController(ITokenService tokenService
-        )
+        public AccountController(ITokenService tokenService, IProfileService profileService)
         {
             _tokenService = tokenService;
-        }
-
-        [HttpGet]
-        public string Get()
-        {
-            string messageToVisitor = "You are not logged.";
-            if (User.Identity.IsAuthenticated)
-            {
-                messageToVisitor = $"Hello, {User.Claims.First().Value}.";
-            }
-
-            return DateTime.Now + "\n" + messageToVisitor;
+            _profileService = profileService;
         }
 
         [HttpPost("register")]
@@ -69,18 +61,57 @@ namespace BackSide2.Controllers
 
         [Authorize]
         [HttpGet("user")]
-        public async Task<IActionResult> UserInfo(
+        public async Task<IActionResult> Profile(
         )
         {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
-            var userBd = (Person) await _tokenService.GetUserProfileInfo(userEmail);
-            var user = userBd.ToProfileOwnReturnDto();
-            return Ok(user);
+            try
+            {
+                var user = await _profileService.GetUserProfileInfo();
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {ex.Message});
+            }
         }
 
         [Authorize]
+        [HttpPut("changePassword")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto model
+        )
+        {
+            try
+            {
+                await _profileService.ChangePasswordAsync(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+
+        [HttpPut("editProfile")]
+        public async Task<IActionResult> EditProfile(EditProfileDto model
+        )
+        {
+            try
+            {
+                var user = await _profileService.ChangeProfileAsync(model);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+
+
+        [Authorize]
         [HttpPost("is_token_valid")]
-        public async Task<IActionResult> IsTokenValid(
+        public OkResult IsTokenValid(
             LoginDto model
         )
         {

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BackSide2.BL.Entity;
-using BackSide2.BL.Entity.AuthorizeDto;
+﻿using BackSide2.BL.Models.AuthorizeDto;
 using BackSide2.DAO.Entities;
 
 namespace BackSide2.BL.Extentions
 {
     public static class PersonExtentions
     {
-        public static ProfileOwnReturnDto ToProfileOwnReturnDto(this Person person)
+        public static ProfileReturnDto ToProfileOwnReturnDto(this Person person)
         {
-            return new ProfileOwnReturnDto()
+            return new ProfileReturnDto
             {
                 UserName = person.UserName,
                 Email = person.Email,

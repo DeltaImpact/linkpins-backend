@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BackSide2.BL.Entity
+namespace BackSide2.BL.Models.ProfileDto
 {
-    public class LoginDto
+    public class ChangePasswordDto
     {
+        [Required]
         [StringLength(100, ErrorMessage = "{0} must be between {2} and {1} characters long.", MinimumLength = 3)]
-        [Required] public string Email { get; set; }
+        public string OldPassword { get; set; }
 
+        [Required]
         [StringLength(100, ErrorMessage = "{0} must be between {2} and {1} characters long.", MinimumLength = 3)]
-        [Required] public string Password { get; set; }
+        public string NewPassword { get; set; }
     }
 }

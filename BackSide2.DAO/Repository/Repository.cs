@@ -42,7 +42,7 @@ namespace BackSide2.DAO.Repository
             });
         }
 
-        public async Task<T> GetAsync(long id) =>
+        public async Task<T> GetByIdAsync(long id) =>
             await _entities.FirstOrDefaultAsync(e => e.Id == id);
 
         public async Task<T> InsertAsync(T entity)

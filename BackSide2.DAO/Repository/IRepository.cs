@@ -11,7 +11,8 @@ namespace BackSide2.DAO.Repository
         //Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null);
         Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate,
             params Expression<Func<T, object>>[] includes);
-        Task<T> GetAsync(long id);
+
+        Task<T> GetByIdAsync(long id);
         Task<T> InsertAsync(T entity);
         Task<T> UpdateAsync(T entity);
         Task<T> RemoveAsync(T entity);

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using BackSide2.DAO.Entities;
-
-namespace BackSide2.BL.Entity.AuthorizeDto
+﻿namespace BackSide2.BL.Models.AuthorizeDto
 {
-    public class ProfileOwnReturnDto
+    public class ProfileReturnDto
     {
         public string UserName { get; set; }
         public string Email { get; set; }

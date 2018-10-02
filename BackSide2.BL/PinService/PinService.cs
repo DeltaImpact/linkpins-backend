@@ -81,7 +81,9 @@ namespace BackSide2.BL.PinService
         public async Task<object> DeletePinAsync(DeletePinDto model)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var usr = await (await _personService.GetAllAsync(d => d.Id == userId)).FirstOrDefaultAsync();
+            //var usr = await (await _personService.GetAllAsync(d => d.Id == userId)).FirstOrDefaultAsync();
+
+
 
             var pin =
                 await (await _pinService.GetAllAsync(d => d.Id == model.Id, x => x.BoardPins))
@@ -92,7 +94,15 @@ namespace BackSide2.BL.PinService
                 throw new BoardServiceException("Pin not found.");
             }
 
-            var allPinConnections = await (await _boardPinService.GetAllAsync(d => d.Pin == pin)).ToListAsync();
+            if (pin == null)
+            {
+                throw new BoardServiceException("Pin not found.");
+            }
+
+            var allPinConnections = await (await _boardPinService.GetAllAsync(d => d.Pin == pin, i => i.Board)).ToListAsync();
+
+
+
             foreach (var pinConnection in allPinConnections)
             {
                 var boardPin = (await _boardPinService.RemoveAsync(pinConnection));

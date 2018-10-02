@@ -3,7 +3,7 @@ using System.Text;
 
 namespace BackSide2.BL
 {
-    public class Hash
+    public static class Hash
     {
         public static string GetMd5Hash(MD5 md5Hash, string input)
         {
@@ -17,7 +17,7 @@ namespace BackSide2.BL
             return sBuilder.ToString();
         }
 
-        public static string GetPassHash(string password)
+        public static string GetPassHash(this string password)
         {
             using (MD5 md5Hash = MD5.Create())
             {
