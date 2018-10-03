@@ -96,9 +96,9 @@ namespace BackSide2.BL.BoardService
         )
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var pins =
-                await (await _boardPinService.GetAllAsync(d => d.Board.Id == boardId, x => x.Pin)).Select(e => e.Pin.ToPinReturnDto())
-                    .ToListAsync();
+            //var pins =
+            //    await (await _boardPinService.GetAllAsync(d => d.Board.Id == boardId, x => x.Pin)).Select(e => e.Pin.ToPinReturnDto())
+            //        .ToListAsync();
 
             var board =
                 await (await _boardService.GetAllAsync(d => d.Id == boardId, x => x.Person)).FirstOrDefaultAsync();
@@ -114,7 +114,8 @@ namespace BackSide2.BL.BoardService
                 throw new BoardServiceException("Board not found.");
             }
 
-            return board.ToBoardReturnDto(pins, isOwner);
+            //return board.ToBoardReturnDto(pins, isOwner);
+            return board.ToBoardReturnDto(isOwner);
         }
 
         public async Task<object> GetBoardsAsync()

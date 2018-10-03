@@ -125,5 +125,19 @@ namespace BackSide2.BL.PinService
                 await _pinService.UpdateAsync(model.ToPin(pinOld, userId));
             return new { board };
         }
+
+        public async Task<object> GetBoardPinsAsync(
+            int boardId
+        )
+        {
+            var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var pins =
+                await (await _boardPinService.GetAllAsync(d => d.Board.Id == boardId, x => x.Pin)).Select(e => e.Pin.ToPinReturnDto())
+                    .ToListAsync();
+
+            return pins;
+        }
+
+
     }
 }
