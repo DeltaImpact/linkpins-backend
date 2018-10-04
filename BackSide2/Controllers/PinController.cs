@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using BackSide2.BL.authorize;
+using BackSide2.BL.BoardPinService;
 using BackSide2.BL.BoardService;
-using BackSide2.BL.Entity;
 using BackSide2.BL.Entity.BoardDto;
 using BackSide2.BL.Entity.PinDto;
+using BackSide2.BL.Models.BoardPinDto;
+using BackSide2.BL.Models.PinDto;
 using BackSide2.BL.PinService;
-using BackSide2.DAO.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,10 +20,13 @@ namespace BackSide2.Controllers
     {
         private readonly IBoardService _boardService;
         private readonly IPinService _pinService;
-        public PinController(IBoardService boardService, IPinService pinService)
+        private readonly IBoardPinService _boardPinService;
+
+        public PinController(IBoardService boardService, IPinService pinService, IBoardPinService boardPinService)
         {
             _boardService = boardService;
             _pinService = pinService;
+            _boardPinService = boardPinService;
         }
 
         [Authorize]
@@ -36,18 +35,16 @@ namespace BackSide2.Controllers
         {
             try
             {
-                long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var resopnsePlayload = await _pinService.GetPinAsync(id);
-                //var cls = User.Claims.ToArray();
                 return Ok(resopnsePlayload);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new {ex.Message});
             }
         }
 
-        [Authorize]                 
+        [Authorize]
         [HttpPost("addPin")]
         public async Task<IActionResult> AddPin(
             AddPinDto model
@@ -56,8 +53,6 @@ namespace BackSide2.Controllers
             try
             {
                 var resopnsePlayload = await _pinService.AddPinAsync(model);
-                //var cls = User.Claims.ToArray();
-                //var resopnsePlayload = "";
                 return Ok(resopnsePlayload);
             }
             catch (Exception ex)
@@ -79,7 +74,7 @@ namespace BackSide2.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new {ex.Message});
             }
         }
 
@@ -91,35 +86,84 @@ namespace BackSide2.Controllers
         {
             try
             {
-                long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var resopnsePlayload = await _pinService.UpdatePinAsync(model);
                 //var resopnsePlayload = "";
                 return Ok(resopnsePlayload);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new {ex.Message});
             }
         }
 
-        //[Authorize]
-        //[HttpPost("getPins")]
-        //public async Task<IActionResult> GetPins()
-        //{
-        //    try
-        //    {
-        //        long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        //        var responsePayload = await _boardService.GetBoardsAsync();
-        //        return Ok(responsePayload);
 
-        //        //long userId = (long)Convert.ToInt64(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        //        //var cls = User.Claims.ToArray();
-        //        //var asd = cls;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new { ex.Message });
-        //    }
-        //}
+        //[Authorize]
+        [HttpGet("getBoardsWherePinSaved")]
+        public async Task<IActionResult> GetBoardWherePinSaved(
+            int pinId
+        )
+        {
+            try
+            {
+                var resopnsePlayload = await _boardPinService.GetBoardsWherePinsSavedAsync(pinId);
+                return Ok(resopnsePlayload);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {ex.Message});
+            }
+        }
+
+        [Authorize]
+        [HttpGet("getBoardsWherePinNotSaved")]
+        public async Task<IActionResult> GetBoardWherePinNotSaved(
+            int pinId
+        )
+        {
+            try
+            {
+                var resopnsePlayload = await _boardPinService.GetBoardsWherePinsNotSavedAsync(pinId);
+                return Ok(resopnsePlayload);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {ex.Message});
+            }
+        }
+
+
+        [Authorize]
+        [HttpPost("addPinToBoard")]
+        public async Task<IActionResult> AddPinToBoard(
+            AddPinToBoardDto model
+        )
+        {
+            try
+            {
+                var resopnsePlayload = await _boardPinService.AddPinToBoardAsync(model);
+                return Ok(resopnsePlayload);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {ex.Message});
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("deletePinFromBoard")]
+        public async Task<IActionResult> DeletePinFromBoard(
+            DeletePinFromBoardDto model
+        )
+        {
+            try
+            {
+                var resopnsePlayload = await _boardPinService.DeletePinFromBoardAsync(model);
+                return Ok(resopnsePlayload);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {ex.Message});
+            }
+        }
     }
 }

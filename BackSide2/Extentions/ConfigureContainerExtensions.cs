@@ -1,4 +1,5 @@
 ﻿using BackSide2.BL.authorize;
+using BackSide2.BL.BoardPinService;
 using BackSide2.BL.BoardService;
 using BackSide2.BL.ParsePageService;
 using BackSide2.BL.PinService;
@@ -25,6 +26,7 @@ namespace BackSide2.Extentions
             serviceCollection.AddScoped<IBoardService, BoardService>();
             serviceCollection.AddScoped<IPinService, PinService>();
             serviceCollection.AddScoped<IProfileService, ProfileService>();
+            serviceCollection.AddScoped<IBoardPinService, BoardPinService>();
         }
     }
 }

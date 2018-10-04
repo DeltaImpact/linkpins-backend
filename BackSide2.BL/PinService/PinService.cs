@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BackSide2.BL.Entity.PinDto;
 using BackSide2.BL.Exceptions;
 using BackSide2.BL.Extentions;
+using BackSide2.BL.Models.PinDto;
 using BackSide2.DAO.Entities;
 using BackSide2.DAO.Repository;
 using Microsoft.AspNetCore.Http;
@@ -41,21 +43,26 @@ namespace BackSide2.BL.PinService
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var usr = await (await _personService.GetAllAsync(d => d.Id == userId)).FirstOrDefaultAsync();
-
-            Pin pinToAdd = model.ToPin(usr);
-
-            var pin = await _pinService.InsertAsync(pinToAdd);
             Board boardInDb =
-                await (await _boardService.GetAllAsync(d => d.Id == model.BoardId && d.Person.Id == userId))
-                    .FirstOrDefaultAsync();
+                await _boardService.GetByIdAsync(model.BoardId);
+            if (boardInDb == null)
+            {
+                throw new BoardServiceException("Board not found.");
+            }
 
+            if (boardInDb.CreatedBy != userId)
+            {
+                throw new UnauthorizedAccessException("You have no premissions to edit this board.");
+            }
+
+            var pin = await _pinService.InsertAsync(model.ToPin(usr));
             BoardPin relation = new BoardPin
             {
                 CreatedBy = usr.Id,
                 Pin = pin,
                 Board = boardInDb
             };
-
+            await _boardPinService.InsertAsync(relation);
             return new {pin.Id};
         }
 
@@ -81,26 +88,21 @@ namespace BackSide2.BL.PinService
         public async Task<object> DeletePinAsync(DeletePinDto model)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            //var usr = await (await _personService.GetAllAsync(d => d.Id == userId)).FirstOrDefaultAsync();
-
-
-
             var pin =
-                await (await _pinService.GetAllAsync(d => d.Id == model.Id, x => x.BoardPins))
-                    .FirstOrDefaultAsync();
+                await _pinService.GetByIdAsync(model.Id);
 
             if (pin == null)
             {
                 throw new BoardServiceException("Pin not found.");
             }
 
-            if (pin == null)
+            if (pin.CreatedBy != userId)
             {
-                throw new BoardServiceException("Pin not found.");
+                throw new UnauthorizedAccessException("You have no premissions to delete this pin.");
             }
 
-            var allPinConnections = await (await _boardPinService.GetAllAsync(d => d.Pin == pin, i => i.Board)).ToListAsync();
-
+            var allPinConnections =
+                await (await _boardPinService.GetAllAsync(d => d.Pin == pin, i => i.Board)).ToListAsync();
 
 
             foreach (var pinConnection in allPinConnections)
@@ -116,28 +118,20 @@ namespace BackSide2.BL.PinService
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var pinOld =
-                await(await _pinService.GetAllAsync(d => d.Id == model.Id)).FirstOrDefaultAsync();
+                await _pinService.GetByIdAsync(model.Id);
             if (pinOld == null)
             {
                 throw new BoardServiceException("Pin not found.");
             }
+
+            if (pinOld.CreatedBy != userId)
+            {
+                throw new UnauthorizedAccessException("You have no premissions to delete this pin.");
+            }
+
             var board =
                 await _pinService.UpdateAsync(model.ToPin(pinOld, userId));
-            return new { board };
+            return new {board};
         }
-
-        public async Task<object> GetBoardPinsAsync(
-            int boardId
-        )
-        {
-            var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var pins =
-                await (await _boardPinService.GetAllAsync(d => d.Board.Id == boardId, x => x.Pin)).Select(e => e.Pin.ToPinReturnDto())
-                    .ToListAsync();
-
-            return pins;
-        }
-
-
     }
 }

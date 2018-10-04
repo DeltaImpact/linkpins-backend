@@ -1,7 +1,6 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BackSide2.BL.Entity.PinDto
+namespace BackSide2.BL.Models.PinDto
 {
     public class AddPinDto
     {

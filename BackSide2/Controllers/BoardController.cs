@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using BackSide2.BL.BoardPinService;
 using BackSide2.BL.BoardService;
 using BackSide2.BL.Entity.BoardDto;
 using Microsoft.AspNetCore.Authorization;
@@ -14,11 +15,11 @@ namespace BackSide2.Controllers
     public class DeskController : Controller
     {
         private readonly IBoardService _boardService;
-
-        public DeskController(IBoardService boardService
-        )
+        private readonly IBoardPinService _boardPinService;
+        public DeskController(IBoardService boardService, IBoardPinService boardPinService)
         {
             _boardService = boardService;
+            _boardPinService = boardPinService;
         }
 
         [Authorize]
@@ -33,6 +34,23 @@ namespace BackSide2.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new {ex.Message});
+            }
+        }
+
+        [Authorize]
+        [HttpGet("getBoardPins")]
+        public async Task<IActionResult> GetBoardPins(
+            int boardId
+        )
+        {
+            try
+            {
+                var resopnsePlayload = await _boardPinService.GetBoardPinsAsync(boardId);
+                return Ok(resopnsePlayload);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
             }
         }
 
