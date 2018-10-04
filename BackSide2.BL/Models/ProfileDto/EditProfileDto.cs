@@ -6,7 +6,6 @@ namespace BackSide2.BL.Models.ProfileDto
     {
         [Required]
         [StringLength(100, ErrorMessage = "{0} must be between {2} and {1} characters long.", MinimumLength = 3)]
-        //[DataType(DataType.Password)]
         public string Username { get; set; }
 
         [Required]

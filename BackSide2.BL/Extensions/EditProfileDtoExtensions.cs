@@ -1,11 +1,10 @@
-﻿using BackSide2.BL.Entity.PinDto;
-using BackSide2.BL.Models.AuthorizeDto;
+﻿using BackSide2.BL.Models.AuthorizeDto;
 using BackSide2.BL.Models.ProfileDto;
 using BackSide2.DAO.Entities;
 
-namespace BackSide2.BL.Extentions
+namespace BackSide2.BL.Extensions
 {
-    public static class EditProfileDtoExtentions
+    public static class EditProfileDtoExtensions
     {
         public static Person ToPerson(this EditProfileDto model, Person person)
         {

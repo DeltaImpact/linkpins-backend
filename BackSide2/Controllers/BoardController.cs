@@ -2,11 +2,9 @@
 using System.Threading.Tasks;
 using BackSide2.BL.BoardPinService;
 using BackSide2.BL.BoardService;
-using BackSide2.BL.Entity.BoardDto;
+using BackSide2.BL.Models.BoardDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BackSide2.Controllers
 {
@@ -28,8 +26,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _boardService.GetBoardAsync(id);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _boardService.GetBoardAsync(id);
+                return Ok(responsePayload);
             }
             catch (Exception ex)
             {
@@ -45,8 +43,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _boardPinService.GetBoardPinsAsync(boardId);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _boardPinService.GetBoardPinsAsync(boardId);
+                return Ok(responsePayload);
             }
             catch (Exception ex)
             {
@@ -62,8 +60,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _boardService.AddBoardAsync(model);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _boardService.AddBoardAsync(model);
+                return Ok(responsePayload);
             }
             catch (Exception ex)
             {
@@ -79,8 +77,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _boardService.DeleteBoardAsync(model);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _boardService.DeleteBoardAsync(model);
+                return Ok(responsePayload);
             }
             catch (Exception ex)
             {
@@ -96,8 +94,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _boardService.UpdateBoardAsync(model);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _boardService.UpdateBoardAsync(model);
+                return Ok(responsePayload);
             }
             catch (Exception ex)
             {

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using BackSide2.BL.Entity.PinDto;
-using BackSide2.DAO.Entities;
+using BackSide2.BL.Models.PinDto;
 
-namespace BackSide2.BL.Entity.BoardDto
+namespace BackSide2.BL.Models.BoardDto
 {
     public class BoardReturnDto
     {

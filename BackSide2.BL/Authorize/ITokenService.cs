@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using BackSide2.BL.Entity;
 using BackSide2.BL.Models.AuthorizeDto;
 
 namespace BackSide2.BL.authorize

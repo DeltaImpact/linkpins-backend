@@ -2,9 +2,8 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BackSide2.BL.Entity.PinDto;
 using BackSide2.BL.Exceptions;
-using BackSide2.BL.Extentions;
+using BackSide2.BL.Extensions;
 using BackSide2.BL.Models.PinDto;
 using BackSide2.DAO.Entities;
 using BackSide2.DAO.Repository;
@@ -52,7 +51,7 @@ namespace BackSide2.BL.PinService
 
             if (boardInDb.CreatedBy != userId)
             {
-                throw new UnauthorizedAccessException("You have no premissions to edit this board.");
+                throw new UnauthorizedAccessException("You have no permissions to edit this board.");
             }
 
             var pin = await _pinService.InsertAsync(model.ToPin(usr));

@@ -1,6 +1,4 @@
 ﻿using System.Threading.Tasks;
-using BackSide2.BL.Entity;
-using BackSide2.BL.Entity.PinDto;
 using BackSide2.BL.Models.PinDto;
 
 namespace BackSide2.BL.PinService

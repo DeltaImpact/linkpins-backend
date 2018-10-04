@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BackSide2.BL.Entity;
-using BackSide2.BL.Entity.BoardDto;
+﻿using BackSide2.BL.Models.BoardDto;
 using BackSide2.DAO.Entities;
 
-namespace BackSide2.BL.Extentions
+namespace BackSide2.BL.Extensions
 {
     public static class AddBoardDtoExtentions
     {

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using BackSide2.BL.Entity.BoardDto;
-using BackSide2.BL.Entity.PinDto;
+using BackSide2.BL.Models.BoardDto;
+using BackSide2.BL.Models.PinDto;
 using BackSide2.DAO.Entities;
 
-namespace BackSide2.BL.Extentions
+namespace BackSide2.BL.Extensions
 {
-    public static class BoardExtentions
+    public static class BoardExtensions
     {
         public static BoardReturnDto ToBoardReturnDto(this Board board)
         {

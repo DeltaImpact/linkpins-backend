@@ -1,10 +1,9 @@
-﻿using BackSide2.BL.Entity.BoardDto;
-using BackSide2.BL.Entity.PinDto;
+﻿using BackSide2.BL.Models.PinDto;
 using BackSide2.DAO.Entities;
 
-namespace BackSide2.BL.Extentions
+namespace BackSide2.BL.Extensions
 {
-    public static class UpdatePinDtoExtentions
+    public static class UpdatePinDtoExtensions
     {
         public static Pin ToPin(this UpdatePinDto model, Pin pin, long modifiedBy)
         {

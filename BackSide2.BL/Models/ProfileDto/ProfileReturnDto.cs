@@ -1,4 +1,4 @@
-﻿namespace BackSide2.BL.Models.AuthorizeDto
+﻿namespace BackSide2.BL.Models.ProfileDto
 {
     public class ProfileReturnDto
     {

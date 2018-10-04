@@ -1,9 +1,10 @@
 ﻿using BackSide2.BL.Models.AuthorizeDto;
+using BackSide2.BL.Models.ProfileDto;
 using BackSide2.DAO.Entities;
 
-namespace BackSide2.BL.Extentions
+namespace BackSide2.BL.Extensions
 {
-    public static class PersonExtentions
+    public static class PersonExtensions
     {
         public static ProfileReturnDto ToProfileOwnReturnDto(this Person person)
         {

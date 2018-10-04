@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using BackSide2.BL.Entity;
 using BackSide2.BL.Models.AuthorizeDto;
 using BackSide2.BL.Models.ProfileDto;
 

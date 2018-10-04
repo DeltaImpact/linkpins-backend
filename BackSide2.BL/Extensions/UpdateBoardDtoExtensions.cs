@@ -1,9 +1,9 @@
-﻿using BackSide2.BL.Entity.BoardDto;
+﻿using BackSide2.BL.Models.BoardDto;
 using BackSide2.DAO.Entities;
 
-namespace BackSide2.BL.Extentions
+namespace BackSide2.BL.Extensions
 {
-    public static class UpdateBoardDtoExtentions
+    public static class UpdateBoardDtoExtensions
     {
         public static Board ToBoard(this UpdateBoardDto model, Board board, long modifiedBy)
         {

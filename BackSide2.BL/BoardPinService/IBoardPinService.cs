@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BackSide2.BL.Entity.BoardDto;
-using BackSide2.BL.Entity.PinDto;
+using BackSide2.BL.Models.BoardDto;
 using BackSide2.BL.Models.BoardPinDto;
+using BackSide2.BL.Models.PinDto;
 
 namespace BackSide2.BL.BoardPinService
 {

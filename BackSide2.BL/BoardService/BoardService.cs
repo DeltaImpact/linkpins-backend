@@ -2,32 +2,28 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BackSide2.BL.Entity.BoardDto;
 using BackSide2.BL.Exceptions;
-using BackSide2.BL.Extentions;
+using BackSide2.BL.Extensions;
+using BackSide2.BL.Models.BoardDto;
 using BackSide2.DAO.Entities;
 using BackSide2.DAO.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace BackSide2.BL.BoardService
 {
     public class BoardService : IBoardService
     {
-        private readonly IConfiguration _configuration;
         private readonly IRepository<Board> _boardService;
         private readonly IRepository<Person> _personService;
         private readonly IRepository<BoardPin> _boardPinService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public BoardService(
-            IConfiguration configuration,
             IRepository<Board> boardService,
             IRepository<Person> personService,
             IRepository<BoardPin> boardPinService, IHttpContextAccessor httpContextAccessor)
         {
-            _configuration = configuration;
             _boardService = boardService;
             _personService = personService;
             _boardPinService = boardPinService;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BackSide2.BL.Entity;
+using BackSide2.BL.Models.ParseDto;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Configuration;
 
@@ -27,11 +27,7 @@ namespace BackSide2.BL.ParsePageService
                 AutoDetectEncoding = false,
                 OverrideEncoding = Encoding.UTF8
             };
-            //web.OverrideEncoding = Encoding.UTF8;
-            //web.OverrideEncoding = Encoding;
 
-            //web.OverrideEncoding = Encoding.GetEncoding("ISO-8859-1");
-            //web.OverrideEncoding = Encoding.GetEncoding("iso-8859-1");
 
             HtmlDocument htmlDoc;
             try
@@ -48,31 +44,11 @@ namespace BackSide2.BL.ParsePageService
             var encoding = htmlDoc.Encoding;
 
 
-            string rootAdress = web.ResponseUri.Host;
-            string fullRootAdress = web.ResponseUri.AbsoluteUri.Split(rootAdress)[0] + rootAdress;
+            string rootAddress = web.ResponseUri.Host;
+            string fullRootAddress = web.ResponseUri.AbsoluteUri.Split(rootAddress)[0] + rootAddress;
 
 
             var titleNode = htmlDoc.DocumentNode.SelectSingleNode("//head/title");
-
-            //var titleNode1 = htmlDoc.DocumentNode.SelectNodes("//link/title");
-
-
-            //foreach (Match match in Regex.Matches(htmlText, "<link .*? href=\"(.*?.ico)\""))
-            //{
-            //    String url = match.Groups[1].Value;
-
-            //    Console.WriteLine(url);
-            //}
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            //List<string> hrefTags = new List<string>();
-
-            //foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
-            //{
-            //    HtmlAttribute att = link.Attributes["href"];
-            //    hrefTags.Add(att.Value);
-            //}
 
             List<string> ihrefTags = new List<string>();
 
@@ -81,9 +57,7 @@ namespace BackSide2.BL.ParsePageService
             List<string> possibleAvatar = new List<string>();
             List<string> otherImages = new List<string>();
 
-            //string siteLink = model.Url.TrimEnd('/');
-            string siteLink = fullRootAdress;
-            //siteLink = "";
+            string siteLink = fullRootAddress;
 
             foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//link[@href]"))
             {
@@ -95,14 +69,6 @@ namespace BackSide2.BL.ParsePageService
                     favicon.Add(faviconLink);
                 }
             }
-
-            //foreach (Match match in Regex.Matches(htmlDoc.ToString(), "<link .*? href=\"(.*?.ico)\""))
-            //{
-            //    String url = match.Groups[1].Value;
-            //    //favicon.Add(url);
-
-            //    Console.WriteLine(url);
-            //}
 
             foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//img"))
             {
@@ -117,16 +83,11 @@ namespace BackSide2.BL.ParsePageService
                 }
 
                 string linkClass = "";
-                //string linkWidth = null;
-                //string linkHeight = null;
-                //linkClass = link.Attributes["class"].Value;
 
                 foreach (var attr in link.Attributes)
                     if (attr.Name == "class")
                         linkClass = attr.Value;
 
-                //if (attr.Name == "width") linkWidth = attr.Value;
-                //if (attr.Name == "height") linkHeight = attr.Value;
 
                 if (scr != "")
                 {
@@ -134,10 +95,9 @@ namespace BackSide2.BL.ParsePageService
                         possibleLogo.Add(scr);
                     else if (linkClass.Contains("avatar") || scr.Contains("avatar"))
                         possibleAvatar.Add(scr);
-                    else if (linkClass != null) otherImages.Add(scr);
+                    else otherImages.Add(scr);
                 }
 
-                //if (scr != "") ihrefTags.Add(scr);
             }
 
             ihrefTags.AddRange(favicon);
@@ -146,10 +106,6 @@ namespace BackSide2.BL.ParsePageService
             ihrefTags.AddRange(possibleAvatar);
             ihrefTags = ihrefTags.Distinct().ToList();
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-            //var texts = htmlDoc.DocumentNode.Descendants("p");
 
             List<string> text = new List<string>();
             foreach (HtmlNode node in htmlDoc.DocumentNode.SelectNodes("//text()"))
@@ -159,17 +115,13 @@ namespace BackSide2.BL.ParsePageService
                     node.ParentNode.Name != "style")
                     if (textTmp.Trim().Length > model.MinTextLenght)
                         text.Add(textTmp.Trim());
-                //text.Add(node.InnerText);
-                //Console.WriteLine("text=" + node.InnerText);
             }
 
-            //text.Sort((x, y) => y.Length.CompareTo(x.Length));
 
             var response = new
             {
                 url = model.Url,
                 header = titleNode.InnerText,
-                //images = ihrefObj,
                 images = ihrefTags,
                 possibleDescriptions = text
             };

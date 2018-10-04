@@ -3,37 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BackSide2.BL.Entity.BoardDto;
-using BackSide2.BL.Entity.PinDto;
 using BackSide2.BL.Exceptions;
-using BackSide2.BL.Extentions;
+using BackSide2.BL.Extensions;
+using BackSide2.BL.Models.BoardDto;
 using BackSide2.BL.Models.BoardPinDto;
 using BackSide2.BL.Models.PinDto;
 using BackSide2.DAO.Entities;
 using BackSide2.DAO.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace BackSide2.BL.BoardPinService
 {
     public class BoardPinService : IBoardPinService
     {
-        private readonly IConfiguration _configuration;
         private readonly IRepository<Board> _boardService;
         private readonly IRepository<Person> _personService;
         private readonly IRepository<Pin> _pinService;
         private readonly IRepository<BoardPin> _boardPinService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public BoardPinService(
-            IConfiguration configuration,
-            IRepository<Board> boardService,
+        public BoardPinService(IRepository<Board> boardService,
             IRepository<Person> personService,
             IRepository<Pin> pinService, IRepository<BoardPin> boardPinService,
             IHttpContextAccessor httpContextAccessor)
         {
-            _configuration = configuration;
             _boardService = boardService;
             _personService = personService;
             _pinService = pinService;
@@ -137,7 +131,7 @@ namespace BackSide2.BL.BoardPinService
 
             if (boardInDb.CreatedBy != userId)
             {
-                throw new UnauthorizedAccessException("You have no premissions to edit this board.");
+                throw new UnauthorizedAccessException("You have no permissions to edit this board.");
             }
 
             BoardPin relation = new BoardPin
@@ -160,8 +154,6 @@ namespace BackSide2.BL.BoardPinService
                         x => x.Board))
                     .FirstOrDefaultAsync();
 
-            var pinInDb =
-                await _pinService.GetByIdAsync(model.PinId);
             if (boardPinRelation == null)
             {
                 throw new BoardServiceException("Relation not found.");

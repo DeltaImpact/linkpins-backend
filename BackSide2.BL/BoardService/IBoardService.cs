@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using BackSide2.BL.Entity.BoardDto;
+using BackSide2.BL.Models.BoardDto;
 
 namespace BackSide2.BL.BoardService
 {

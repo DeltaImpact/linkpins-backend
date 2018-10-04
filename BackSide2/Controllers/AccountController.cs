@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BackSide2.BL.authorize;
-using BackSide2.BL.Entity;
-using BackSide2.BL.Extentions;
 using BackSide2.BL.Models.AuthorizeDto;
 using BackSide2.BL.Models.ProfileDto;
 using BackSide2.BL.ProfileService;
-using BackSide2.DAO.Entities;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BackSide2.Controllers
@@ -34,8 +29,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _tokenService.RegisterAsync(model);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _tokenService.RegisterAsync(model);
+                return Ok(responsePayload);
             }
             catch (Exception ex)
             {
@@ -50,8 +45,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _tokenService.LoginAsync(model);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _tokenService.LoginAsync(model);
+                return Ok(responsePayload);
             }
             catch (Exception ex)
             {

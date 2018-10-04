@@ -17,8 +17,6 @@ namespace BackSide2.BL.Mapping
             entityBuilder.Property(t => t.Surname);  
             entityBuilder.Property(t => t.Gender);  
             entityBuilder.Property(t => t.Language);
-            //entityBuilder.Property(t => t.Created);
-            //entityBuilder.Property(t => t.Modified);
             entityBuilder.ToTable("Persons");
         }
 

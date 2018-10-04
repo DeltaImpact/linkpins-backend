@@ -1,9 +1,9 @@
 ﻿using BackSide2.BL.Models.AuthorizeDto;
 using BackSide2.DAO.Entities;
 
-namespace BackSide2.BL.Extentions
+namespace BackSide2.BL.Extensions
 {
-    public static class LoggedDtoExtentions
+    public static class LoggedDtoExtensions
     {
         public static LoggedDto ToLoggedDto(this Person person, string token)
         {

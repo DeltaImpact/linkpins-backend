@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using BackSide2.BL.Entity;
 using BackSide2.BL.Exceptions;
-using BackSide2.BL.Extentions;
+using BackSide2.BL.Extensions;
 using BackSide2.BL.Models.AuthorizeDto;
 using BackSide2.BL.Models.ProfileDto;
 using BackSide2.DAO.Entities;
@@ -14,21 +10,17 @@ using BackSide2.DAO.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BackSide2.BL.ProfileService
 {
     public class ProfileService : IProfileService
     {
-        private readonly IConfiguration _configuration;
         private readonly IRepository<Person> _personService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ProfileService(
-            IConfiguration configuration,
             IRepository<Person> personService, IHttpContextAccessor httpContextAccessor)
         {
-            _configuration = configuration;
             _personService = personService;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -37,9 +29,6 @@ namespace BackSide2.BL.ProfileService
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var user = (await _personService.GetByIdAsync(userId)).ToProfileOwnReturnDto();
-            //var user = (await (await _personService.GetAllAsync(d =>
-            //        d.Id == userId))
-            //    .FirstOrDefaultAsync()).ToProfileOwnReturnDto();
             return user;
         }
 

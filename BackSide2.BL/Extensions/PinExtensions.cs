@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BackSide2.BL.Entity;
-using BackSide2.BL.Entity.BoardDto;
-using BackSide2.BL.Entity.PinDto;
+﻿using System.Collections.Generic;
+using BackSide2.BL.Models.BoardDto;
+using BackSide2.BL.Models.PinDto;
 using BackSide2.DAO.Entities;
 
-namespace BackSide2.BL.Extentions
+namespace BackSide2.BL.Extensions
 {
-    public static class PinExtentions
+    public static class PinExtensions
     {
-        public static PinReturnDto ToPinReturnDto(this Pin pin, List<BoardReturnDto> boards = null)
+
+        public static PinReturnDto ToPinReturnDto(this Pin pin, List<BoardReturnDto> boards)
         {
             return new PinReturnDto
             {

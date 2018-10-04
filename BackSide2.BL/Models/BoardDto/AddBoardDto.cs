@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BackSide2.BL.Entity.BoardDto
+namespace BackSide2.BL.Models.BoardDto
 {
     public class AddBoardDto
     {

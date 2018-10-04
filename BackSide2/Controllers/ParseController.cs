@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BackSide2.BL.authorize;
-using BackSide2.BL.Entity;
+using BackSide2.BL.Models.ParseDto;
 using BackSide2.BL.ParsePageService;
-using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace BackSide2.Controllers
 {
@@ -45,8 +41,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _parsePageService.ParsePageAsync(model);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _parsePageService.ParsePageAsync(model);
+                return Ok(responsePayload);
             }
             catch (Exception ex)
             {
