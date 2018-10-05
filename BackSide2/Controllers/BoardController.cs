@@ -29,6 +29,10 @@ namespace BackSide2.Controllers
                 var responsePayload = await _boardService.GetBoardAsync(id);
                 return Ok(responsePayload);
             }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
             catch (Exception ex)
             {
                 return BadRequest(new {ex.Message});
@@ -45,6 +49,10 @@ namespace BackSide2.Controllers
             {
                 var responsePayload = await _boardPinService.GetBoardPinsAsync(boardId);
                 return Ok(responsePayload);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
             }
             catch (Exception ex)
             {

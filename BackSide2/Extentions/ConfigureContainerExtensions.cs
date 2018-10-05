@@ -20,7 +20,6 @@ namespace BackSide2.Extentions
 
         public static void AddScopedServices(this IServiceCollection serviceCollection)
         {
-            //serviceCollection.AddTransient<IPersonService, PersonService>();
             serviceCollection.AddScoped<ITokenService, TokenService>();
             serviceCollection.AddScoped<IParsePageService, ParsePageService>();
             serviceCollection.AddScoped<IBoardService, BoardService>();

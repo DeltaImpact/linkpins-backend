@@ -104,13 +104,13 @@ namespace BackSide2.Controllers
 
 
 
-        [Authorize]
-        [HttpPost("is_token_valid")]
-        public OkResult IsTokenValid(
-            LoginDto model
-        )
-        {
-            return Ok();
-        }
+        //[Authorize]
+        //[HttpPost("is_token_valid")]
+        //public OkResult IsTokenValid(
+        //    LoginDto model
+        //)
+        //{
+        //    return Ok();
+        //}
     }
 }

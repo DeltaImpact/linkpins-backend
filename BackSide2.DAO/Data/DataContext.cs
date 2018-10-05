@@ -10,27 +10,10 @@ namespace BackSide2.DAO.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            //Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //var defaultUser = new Person()
-            //{
-            //   // Id = 1,
-            //    UserName = "system",
-            //    Email = "system@admin.com",
-            //    Password = null,
-            //    Role = Role.Admin,
-            //    FirstName = null,
-            //    Surname = null,
-            //    Gender = null,
-            //    Language = null,
-            //    CreatedBy = null,
-            //    UpdatedBy = null,
-            //};
-            //modelBuilder.Entity<Person>().HasData(defaultUser);
-
             base.OnModelCreating(modelBuilder);
         }
 

@@ -15,7 +15,6 @@ namespace BackSide2.BL.PinService
 {
     public class PinService : IPinService
     {
-        private readonly IConfiguration _configuration;
         private readonly IRepository<Board> _boardService;
         private readonly IRepository<Person> _personService;
         private readonly IRepository<Pin> _pinService;
@@ -23,13 +22,11 @@ namespace BackSide2.BL.PinService
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public PinService(
-            IConfiguration configuration,
             IRepository<Board> boardService,
             IRepository<Person> personService,
             IRepository<Pin> pinService, IRepository<BoardPin> boardPinService,
             IHttpContextAccessor httpContextAccessor)
         {
-            _configuration = configuration;
             _boardService = boardService;
             _personService = personService;
             _pinService = pinService;
@@ -42,7 +39,7 @@ namespace BackSide2.BL.PinService
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var usr = await (await _personService.GetAllAsync(d => d.Id == userId)).FirstOrDefaultAsync();
-            Board boardInDb =
+            var boardInDb =
                 await _boardService.GetByIdAsync(model.BoardId);
             if (boardInDb == null)
             {
@@ -55,7 +52,7 @@ namespace BackSide2.BL.PinService
             }
 
             var pin = await _pinService.InsertAsync(model.ToPin(usr));
-            BoardPin relation = new BoardPin
+            var relation = new BoardPin
             {
                 CreatedBy = usr.Id,
                 Pin = pin,
@@ -84,11 +81,11 @@ namespace BackSide2.BL.PinService
             return pin.ToPinReturnDto(boards);
         }
 
-        public async Task<object> DeletePinAsync(DeletePinDto model)
+        public async Task<object> DeletePinAsync(int pinId)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var pin =
-                await _pinService.GetByIdAsync(model.Id);
+                await _pinService.GetByIdAsync(pinId);
 
             if (pin == null)
             {
@@ -106,10 +103,10 @@ namespace BackSide2.BL.PinService
 
             foreach (var pinConnection in allPinConnections)
             {
-                var boardPin = (await _boardPinService.RemoveAsync(pinConnection));
+                await _boardPinService.RemoveAsync(pinConnection);
             }
 
-            var removedPin = (await _pinService.RemoveAsync(pin));
+            var removedPin = await _pinService.RemoveAsync(pin);
             return removedPin.ToPinReturnDto();
         }
 

@@ -8,7 +8,7 @@ namespace BackSide2.BL.PinService
         Task<object> AddPinAsync(AddPinDto model);
 
         Task<object> GetPinAsync(int pinId);
-        Task<object> DeletePinAsync(DeletePinDto model);
+        Task<object> DeletePinAsync(int pinId);
         Task<object> UpdatePinAsync(UpdatePinDto model);
     }
 }

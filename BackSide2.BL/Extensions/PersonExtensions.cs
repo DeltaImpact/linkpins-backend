@@ -1,5 +1,4 @@
-﻿using BackSide2.BL.Models.AuthorizeDto;
-using BackSide2.BL.Models.ProfileDto;
+﻿using BackSide2.BL.Models.ProfileDto;
 using BackSide2.DAO.Entities;
 
 namespace BackSide2.BL.Extensions

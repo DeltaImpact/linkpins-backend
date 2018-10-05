@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -44,6 +43,9 @@ namespace BackSide2.DAO.Repository
 
         public async Task<T> GetByIdAsync(long id) =>
             await _entities.FirstOrDefaultAsync(e => e.Id == id);
+
+        public async Task<bool> ExistsByIdAsync(long id) =>
+            await _entities.Where(e => e.Id == id).AnyAsync();
 
         public async Task<T> InsertAsync(T entity)
         {

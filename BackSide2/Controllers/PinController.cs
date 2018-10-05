@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using BackSide2.BL.BoardPinService;
+using BackSide2.BL.BoardService;
 using BackSide2.BL.Models.BoardPinDto;
 using BackSide2.BL.Models.PinDto;
 using BackSide2.BL.PinService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BackSide2.Controllers
 {
@@ -15,11 +14,13 @@ namespace BackSide2.Controllers
     [ApiController]
     public class PinController : Controller
     {
+        private readonly IBoardService _boardService;
         private readonly IPinService _pinService;
         private readonly IBoardPinService _boardPinService;
 
-        public PinController(IPinService pinService, IBoardPinService boardPinService)
+        public PinController(IBoardService boardService, IPinService pinService, IBoardPinService boardPinService)
         {
+            _boardService = boardService;
             _pinService = pinService;
             _boardPinService = boardPinService;
         }
@@ -30,8 +31,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var responsePayload = await _pinService.GetPinAsync(id);
-                return Ok(responsePayload);
+                var resopnsePlayload = await _pinService.GetPinAsync(id);
+                return Ok(resopnsePlayload);
             }
             catch (Exception ex)
             {
@@ -47,8 +48,12 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var responsePayload = await _pinService.AddPinAsync(model);
-                return Ok(responsePayload);
+                var resopnsePlayload = await _pinService.AddPinAsync(model);
+                return Ok(resopnsePlayload);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
             }
             catch (Exception ex)
             {
@@ -59,13 +64,17 @@ namespace BackSide2.Controllers
         [Authorize]
         [HttpDelete("deletePin")]
         public async Task<IActionResult> DeletePin(
-            DeletePinDto model
+            int pinId
         )
         {
             try
             {
-                var responsePayload = await _pinService.DeletePinAsync(model);
-                return Ok(responsePayload);
+                var resopnsePlayload = await _pinService.DeletePinAsync(pinId);
+                return Ok(resopnsePlayload);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
             }
             catch (Exception ex)
             {
@@ -81,9 +90,12 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var responsePayload = await _pinService.UpdatePinAsync(model);
-                //var responsePayload = "";
-                return Ok(responsePayload);
+                var resopnsePlayload = await _pinService.UpdatePinAsync(model);
+                return Ok(resopnsePlayload);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
             }
             catch (Exception ex)
             {
@@ -100,8 +112,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var responsePayload = await _boardPinService.GetBoardsWherePinsSavedAsync(pinId);
-                return Ok(responsePayload);
+                var resopnsePlayload = await _boardPinService.GetBoardsWherePinsSavedAsync(pinId);
+                return Ok(resopnsePlayload);
             }
             catch (Exception ex)
             {
@@ -117,8 +129,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var responsePayload = await _boardPinService.GetBoardsWherePinsNotSavedAsync(pinId);
-                return Ok(responsePayload);
+                var resopnsePlayload = await _boardPinService.GetBoardsWherePinsNotSavedAsync(pinId);
+                return Ok(resopnsePlayload);
             }
             catch (Exception ex)
             {
@@ -135,8 +147,12 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var responsePayload = await _boardPinService.AddPinToBoardAsync(model);
-                return Ok(responsePayload);
+                var resopnsePlayload = await _boardPinService.AddPinToBoardAsync(model);
+                return Ok(resopnsePlayload);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
             }
             catch (Exception ex)
             {
@@ -152,8 +168,12 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var responsePayload = await _boardPinService.DeletePinFromBoardAsync(model);
-                return Ok(responsePayload);
+                var resopnsePlayload = await _boardPinService.DeletePinFromBoardAsync(model);
+                return Ok(resopnsePlayload);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
             }
             catch (Exception ex)
             {

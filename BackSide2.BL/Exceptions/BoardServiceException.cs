@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace BackSide2.BL.Exceptions
 {
     [Serializable]
-    class BoardServiceException : ApplicationException
+    class BoardServiceException : Exception
     {
         public BoardServiceException()
         {

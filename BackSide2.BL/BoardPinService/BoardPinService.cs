@@ -74,10 +74,10 @@ namespace BackSide2.BL.BoardPinService
                 throw new PinServiceException("Pin not found.");
             }
 
-            List<Board> boardsWherePinSaved =
+            var boardsWherePinSaved =
                 await (await _boardPinService.GetAllAsync(d => d.Pin.Id == pinId && d.CreatedBy == userId, x => x.Board)
                     ).Select(x => x.Board).ToListAsync();
-            List<Board> boardsOfUser =
+            var boardsOfUser =
                 (await _personService.GetAllAsync(d => d.Id == userId, x => x.Boards)).FirstOrDefault()?.Boards
                 .ToList();
             if (boardsOfUser == null)
@@ -95,10 +95,7 @@ namespace BackSide2.BL.BoardPinService
         )
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var pin =
-                await _pinService.GetByIdAsync(pinId);
-
-            if (pin == null)
+            if (!_pinService.ExistsByIdAsync(pinId).Result)
             {
                 throw new PinServiceException("Pin not found.");
             }
@@ -122,7 +119,7 @@ namespace BackSide2.BL.BoardPinService
                 throw new BoardServiceException("Pin not found.");
             }
 
-            Board boardInDb =
+            var boardInDb =
                 await _boardService.GetByIdAsync(model.BoardId);
             if (boardInDb == null)
             {
@@ -134,7 +131,7 @@ namespace BackSide2.BL.BoardPinService
                 throw new UnauthorizedAccessException("You have no permissions to edit this board.");
             }
 
-            BoardPin relation = new BoardPin
+            var relation = new BoardPin
             {
                 CreatedBy = userId,
                 Pin = pinInDb,
@@ -154,6 +151,22 @@ namespace BackSide2.BL.BoardPinService
                         x => x.Board))
                     .FirstOrDefaultAsync();
 
+            if (boardPinRelation.CreatedBy != userId)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+
+            var isLast =
+                (await _boardPinService.GetAllAsync(d => d.Pin.Id == model.PinId)).Count() == 1;
+            if (isLast)
+            {
+                var pin =
+                    await _pinService.GetByIdAsync(model.PinId);
+                await _pinService.RemoveAsync(pin);
+            }
+
+
             if (boardPinRelation == null)
             {
                 throw new BoardServiceException("Relation not found.");
@@ -166,7 +179,7 @@ namespace BackSide2.BL.BoardPinService
 
             await _boardPinService.RemoveAsync(boardPinRelation);
 
-            return boardPinRelation.Board.ToBoardReturnDto(true);
+            return boardPinRelation.Board.ToBoardReturnDto(true, isLast);
         }
     }
 }

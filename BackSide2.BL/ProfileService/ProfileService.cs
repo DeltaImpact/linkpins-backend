@@ -9,7 +9,6 @@ using BackSide2.DAO.Entities;
 using BackSide2.DAO.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace BackSide2.BL.ProfileService
 {

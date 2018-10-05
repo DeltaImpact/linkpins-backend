@@ -31,7 +31,23 @@ namespace BackSide2.BL.Extensions
                 IsPrivate = board.IsPrivate,
                 Modified = board.Modified,
                 Created = board.Created,
-                isOwner = isOwner
+                IsOwner = isOwner
+            };
+        }
+
+        public static BoardReturnDto ToBoardReturnDto(this Board board, bool? isOwner, bool isLast)
+        {
+            return new BoardReturnDto
+            {
+                Id = board.Id,
+                Name = board.Name,
+                Description = board.Description,
+                Img = board.Img,
+                IsPrivate = board.IsPrivate,
+                Modified = board.Modified,
+                Created = board.Created,
+                IsOwner = isOwner,
+                IsLast = isLast
             };
         }
         public static BoardReturnDto ToBoardReturnDto(this Board board, List<PinReturnDto> pins, bool? isOwner)
@@ -46,7 +62,7 @@ namespace BackSide2.BL.Extensions
                 Modified = board.Modified,
                 Created = board.Created,
                 Pins = pins,
-                isOwner = isOwner
+                IsOwner = isOwner
             };
         }
     }

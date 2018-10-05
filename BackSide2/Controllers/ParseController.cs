@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BackSide2.Controllers
 {
-    //"launchUrl": "https://localhost:44300/api/values/?adress=http://artmangroup.ru/uroki-videoproizvodstva/osnovy-fizicheskogo-rendera.html",
-    //"launchUrl": "https://localhost:44300/parse?adress=http://artmangroup.ru/uroki-videoproizvodstva/osnovy-fizicheskogo-rendera.html",
     [Route("parse")]
     [ApiController]
     public class ParseController : ControllerBase
@@ -24,7 +22,7 @@ namespace BackSide2.Controllers
         [HttpGet]
         public string Get()
         {
-            string messageToVisitor = "You are not logged.";
+            var messageToVisitor = "You are not logged.";
             if (User.Identity.IsAuthenticated)
             {
                 messageToVisitor = $"Hello, {User.Claims.First().Value}.";

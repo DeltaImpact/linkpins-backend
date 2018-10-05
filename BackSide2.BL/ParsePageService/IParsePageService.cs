@@ -5,6 +5,6 @@ namespace BackSide2.BL.ParsePageService
 {
     public interface IParsePageService
     {
-        Task<object> ParsePageAsync(ParsePageDto entity);
+        Task<ParsePageReturnDto> ParsePageAsync(ParsePageDto entity);
     }
 }

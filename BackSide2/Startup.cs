@@ -22,10 +22,8 @@ namespace BackSide2
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtKey"]));
 
             services.AddAuthorization(options =>
@@ -33,7 +31,6 @@ namespace BackSide2
                 options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser().Build();
             });
-            //services.AddScoped<UsersService>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -41,27 +38,17 @@ namespace BackSide2
 
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        // укзывает, будет ли валидироваться издатель при валидации токена
                         ValidateIssuer = true,
-                        // строка, представляющая издателя
                         ValidIssuer = Configuration["JwtIssuer"],
-
-                        // будет ли валидироваться потребитель токена
                         ValidateAudience = true,
-                        // установка потребителя токена
                         ValidAudience = Configuration["JwtAudience"],
-                        // будет ли валидироваться время существования
                         ValidateLifetime = true,
-
-                        // установка ключа безопасности
                         IssuerSigningKey = key,
-                        // валидация ключа безопасности
                         ValidateIssuerSigningKey = true,
                     };
-
                 });
-            //services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient);
-            services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DataContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddRepository();
             services.AddScopedServices();
             services.AddCors();
@@ -69,11 +56,8 @@ namespace BackSide2
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -82,9 +66,9 @@ namespace BackSide2
             {
                 app.UseHsts();
             }
+
             app.UseCors(builder =>
                 builder
-                    //.WithOrigins(Configuration["frontside-adress"])
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod());
@@ -94,15 +78,6 @@ namespace BackSide2
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseMvc();
-
-            
-            //SeedData.Initialize(app.ApplicationServices);
-            //using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            //{
-            //    var context = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
-            //    context.Database.Migrate();
-            //}
         }
-
     }
 }

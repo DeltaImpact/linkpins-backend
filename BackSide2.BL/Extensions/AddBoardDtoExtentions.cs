@@ -7,42 +7,41 @@ namespace BackSide2.BL.Extensions
     {
         public static Board ToBoard(this AddBoardDto model, long personId)
         {
-            var board = new Board()
+            var board = new Board
             {
                 Name = model.Name,
                 Description = model.Description,
                 Img = model.Img,
                 IsPrivate = model.IsPrivate,
-                CreatedBy = personId
+                CreatedBy = personId,
+                Person = {Id = personId}
             };
-            board.Person.Id = personId;
             return board;
         }
 
         public static Board ToBoard(this AddBoardDto model, Person person)
         {
-            var board = new Board()
+            var board = new Board
             {
                 Name = model.Name,
                 Description = model.Description,
                 Img = model.Img,
                 IsPrivate = model.IsPrivate,
-                CreatedBy = person.Id
+                CreatedBy = person.Id,
+                Person = person
             };
-            board.Person = person;
             return board;
         }
 
         public static Board ToBoard(this AddBoardDto model)
         {
-            var board = new Board()
+            var board = new Board
             {
                 Name = model.Name,
                 Description = model.Description,
                 Img = model.Img,
                 IsPrivate = model.IsPrivate,
             };
-            //board.UserId = personId;
             return board;
         }
     }

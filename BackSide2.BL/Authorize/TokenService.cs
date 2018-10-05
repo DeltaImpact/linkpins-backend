@@ -31,7 +31,7 @@ namespace BackSide2.BL.authorize
 
         public async Task<LoggedDto> RegisterAsync(RegisterDto model)
         {
-            Person person =
+            var person =
                 await (await _personService.GetAllAsync(d => d.Email == model.Email || d.UserName == model.Username))
                     .FirstOrDefaultAsync();
 
@@ -59,7 +59,7 @@ namespace BackSide2.BL.authorize
             LoginDto model
         )
         {
-            Person person =
+            var person =
                 await (await _personService.GetAllAsync(d =>
                         d.Email == model.Email && d.Password == Hash.GetPassHash(model.Password)))
                     .FirstOrDefaultAsync();
