@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace BackSide2.BL.BoardService
         }
 
 
-        public async Task<object> AddBoardAsync(AddBoardDto model)
+        public async Task<BoardReturnDto> AddBoardAsync(AddBoardDto model)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var usr = await (await _personService.GetAllAsync(d => d.Id == userId)).FirstOrDefaultAsync();
@@ -47,10 +48,10 @@ namespace BackSide2.BL.BoardService
 
             var board = (await _boardService.InsertAsync(boardToAdd)).ToBoardReturnDto();
 
-            return new {board};
+            return board;
         }
 
-        public async Task<object> DeleteBoardAsync(DeleteBoardDto model)
+        public async Task<BoardReturnDto> DeleteBoardAsync(DeleteBoardDto model)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var boardInDb =
@@ -63,10 +64,10 @@ namespace BackSide2.BL.BoardService
             }
 
             var board = (await _boardService.RemoveAsync(boardInDb)).ToBoardReturnDto();
-            return new {board};
+            return board;
         }
 
-        public async Task<object> UpdateBoardAsync(UpdateBoardDto model)
+        public async Task<BoardReturnDto> UpdateBoardAsync(UpdateBoardDto model)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var boardOld =
@@ -85,10 +86,10 @@ namespace BackSide2.BL.BoardService
 
             var board =
                 await _boardService.UpdateAsync(model.ToBoard(boardOld, userId));
-            return new {board};
+            return board.ToBoardReturnDto();
         }
 
-        public async Task<object> GetBoardAsync(
+        public async Task<BoardReturnDto> GetBoardAsync(
             int boardId
         )
         {
@@ -123,7 +124,7 @@ namespace BackSide2.BL.BoardService
             return board.ToBoardReturnDto(pins, isOwner);
         }
 
-        public async Task<object> GetBoardsAsync()
+        public async Task<List<BoardReturnDto>> GetBoardsAsync()
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var boards = (await _personService.GetAllAsync(d => d.Id == userId, x => x.Boards)).FirstOrDefault()?.Boards

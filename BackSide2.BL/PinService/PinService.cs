@@ -62,7 +62,7 @@ namespace BackSide2.BL.PinService
             return new {pin.Id};
         }
 
-        public async Task<object> GetPinAsync(int pinId)
+        public async Task<PinReturnDto> GetPinAsync(int pinId)
         {
             var pin =
                 await (await _pinService.GetAllAsync(d => d.Id == pinId, x => x.BoardPins))
@@ -81,7 +81,7 @@ namespace BackSide2.BL.PinService
             return pin.ToPinReturnDto(boards);
         }
 
-        public async Task<object> DeletePinAsync(int pinId)
+        public async Task<PinReturnDto> DeletePinAsync(int pinId)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var pin =
@@ -94,7 +94,7 @@ namespace BackSide2.BL.PinService
 
             if (pin.CreatedBy != userId)
             {
-                throw new UnauthorizedAccessException("You have no premissions to delete this pin.");
+                throw new UnauthorizedAccessException("You have no permissions to delete this pin.");
             }
 
             var allPinConnections =
@@ -110,7 +110,7 @@ namespace BackSide2.BL.PinService
             return removedPin.ToPinReturnDto();
         }
 
-        public async Task<object> UpdatePinAsync(UpdatePinDto model)
+        public async Task<PinReturnDto> UpdatePinAsync(UpdatePinDto model)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var pinOld =
@@ -122,12 +122,12 @@ namespace BackSide2.BL.PinService
 
             if (pinOld.CreatedBy != userId)
             {
-                throw new UnauthorizedAccessException("You have no premissions to delete this pin.");
+                throw new UnauthorizedAccessException("You have no permissions to delete this pin.");
             }
 
             var board =
                 await _pinService.UpdateAsync(model.ToPin(pinOld, userId));
-            return new {board};
+            return board.ToPinReturnDto();
         }
     }
 }

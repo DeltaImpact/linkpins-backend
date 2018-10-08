@@ -1,25 +1,26 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BackSide2.BL.Models.BoardDto;
 
 namespace BackSide2.BL.BoardService
 {
     public interface IBoardService
     {
-        Task<object> AddBoardAsync(
+        Task<BoardReturnDto> AddBoardAsync(
             AddBoardDto model
         );
 
-        Task<object> DeleteBoardAsync(
+        Task<BoardReturnDto> DeleteBoardAsync(
             DeleteBoardDto model
         );
 
-        Task<object> UpdateBoardAsync(
+        Task<BoardReturnDto> UpdateBoardAsync(
             UpdateBoardDto model
         );
 
-        Task<object> GetBoardAsync(int boardId);
+        Task<BoardReturnDto> GetBoardAsync(int boardId);
 
-        Task<object> GetBoardsAsync();
+        Task<List<BoardReturnDto>> GetBoardsAsync();
  
     }
 }
