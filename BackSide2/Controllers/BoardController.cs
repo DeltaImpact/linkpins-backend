@@ -112,7 +112,7 @@ namespace BackSide2.Controllers
         }
 
         [Authorize]
-        [HttpPost("getBoards")]
+        [HttpGet("getBoards")]
         public async Task<IActionResult> GetBoards()
         {
             try

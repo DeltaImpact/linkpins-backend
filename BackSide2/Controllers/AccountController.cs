@@ -86,7 +86,7 @@ namespace BackSide2.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpPut("editProfile")]
         public async Task<IActionResult> EditProfile(EditProfileDto model
         )
