@@ -5,8 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20180810132118_UserDTOChanged.cs" />
+    <Compile Remove="Migrations\20180815094151_PersonDTOChangedMigration.cs" />
+    <Compile Remove="Migrations\20180816083626_PersonChangedMigration.cs" />
+    <Compile Remove="Migrations\20180816094623_BaseEntityModifiedIsNullableMigration.cs" />
+    <Compile Remove="Migrations\20180816121330_SystemUserAddedMigration.cs" />
     <Compile Remove="Migrations\20180920091544_RemovedLocalIdFromPersonMigration.cs" />
+    <Compile Remove="Migrations\20180920111811_BoardAndPinObjectsAddedAttempt4Migration.cs" />
     <Compile Remove="Migrations\20180924131157_AddedManyToManyRelationBetweenBoardAndPinMigration.cs" />
+    <Compile Remove="Migrations\20180924132716_AddedManyToManyRelationBetweenBoardAndPinMigration.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿using BackSide2.BL.authorize;
+﻿using BackSide2.BL.Authorize;
 using BackSide2.BL.BoardPinService;
 using BackSide2.BL.BoardService;
 using BackSide2.BL.ParsePageService;
@@ -8,7 +8,7 @@ using BackSide2.DAO.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BackSide2.Extentions
+namespace BackSide2.Extensions
 {
     public static class ConfigureContainerExtensions
     {

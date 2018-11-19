@@ -41,7 +41,7 @@ namespace BackSide2.BL.BoardService
                     .FirstOrDefaultAsync();
             if (boardInDb != null)
             {
-                throw new BoardServiceException("Board with such name already added.");
+                throw new ObjectAlreadyExistException("Board with such name already added.");
             }
 
             var boardToAdd = model.ToBoard(usr);
@@ -60,7 +60,7 @@ namespace BackSide2.BL.BoardService
 
             if (boardInDb == null)
             {
-                throw new BoardServiceException("Board not found.");
+                throw new ObjectNotFoundException("Board not found.");
             }
 
             var board = (await _boardService.RemoveAsync(boardInDb)).ToBoardReturnDto();
@@ -74,14 +74,14 @@ namespace BackSide2.BL.BoardService
                 await (await _boardService.GetAllAsync(d => d.Id == model.Id)).FirstOrDefaultAsync();
             if (boardOld == null)
             {
-                throw new BoardServiceException("Board not found.");
+                throw new ObjectNotFoundException("Board not found.");
             }
 
             var boardWithSameName =
                 await (await _boardService.GetAllAsync(d => d.Name == model.Name)).FirstOrDefaultAsync();
             if (boardWithSameName != null && model.Id != boardWithSameName.Id)
             {
-                throw new BoardServiceException("Board with same name already exist.");
+                throw new ObjectAlreadyExistException("Board with same name already exist.");
             }
 
             var board =
@@ -102,7 +102,7 @@ namespace BackSide2.BL.BoardService
 
             if (board == null)
             {
-                throw new BoardServiceException("Board not found.");
+                throw new ObjectNotFoundException("Board not found.");
             }
 
             if (board.CreatedBy != userId && board.IsPrivate)
@@ -118,7 +118,7 @@ namespace BackSide2.BL.BoardService
             var isOwner = board.Person.Id == userId;
             if (board == null)
             {
-                throw new BoardServiceException("Board not found.");
+                throw new ObjectNotFoundException("Board not found.");
             }
 
             return board.ToBoardReturnDto(pins, isOwner);
@@ -128,8 +128,8 @@ namespace BackSide2.BL.BoardService
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var boards = (await _personService.GetAllAsync(d => d.Id == userId, x => x.Boards)).FirstOrDefault()?.Boards
-                .Select(o => o.ToBoardReturnDto()
-                ).ToList();
+                .Select(o => o.ToBoardReturnDto())
+                .ToList();
             return boards;
         }
     }

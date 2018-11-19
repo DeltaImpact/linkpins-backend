@@ -45,7 +45,7 @@ namespace BackSide2.BL.BoardPinService
 
             if (board == null)
             {
-                throw new PinServiceException("Board not found.");
+                throw new ArgumentException("Board not found.");
             }
 
             if (board.CreatedBy != userId && board.IsPrivate)
@@ -71,7 +71,7 @@ namespace BackSide2.BL.BoardPinService
 
             if (pin == null)
             {
-                throw new PinServiceException("Pin not found.");
+                throw new ObjectNotFoundException("Pin not found.");
             }
 
             var boardsWherePinSaved =
@@ -82,7 +82,7 @@ namespace BackSide2.BL.BoardPinService
                 .ToList();
             if (boardsOfUser == null)
             {
-                throw new Exception("Pin not found.");
+                throw new ObjectNotFoundException("Pin not found.");
             }
 
             var boardsWherePinNotSaved =
@@ -97,7 +97,7 @@ namespace BackSide2.BL.BoardPinService
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             if (!_pinService.ExistsByIdAsync(pinId).Result)
             {
-                throw new PinServiceException("Pin not found.");
+                throw new ObjectNotFoundException("Pin not found.");
             }
 
             var boards =
@@ -116,14 +116,14 @@ namespace BackSide2.BL.BoardPinService
                 await _pinService.GetByIdAsync(model.PinId);
             if (pinInDb == null)
             {
-                throw new BoardServiceException("Pin not found.");
+                throw new ObjectNotFoundException("Pin not found.");
             }
 
             var boardInDb =
                 await _boardService.GetByIdAsync(model.BoardId);
             if (boardInDb == null)
             {
-                throw new BoardServiceException("Board not found.");
+                throw new ObjectNotFoundException("Board not found.");
             }
 
             if (boardInDb.CreatedBy != userId)
@@ -169,7 +169,7 @@ namespace BackSide2.BL.BoardPinService
 
             if (boardPinRelation == null)
             {
-                throw new BoardServiceException("Relation not found.");
+                throw new ObjectNotFoundException("Relation not found.");
             }
 
             if (boardPinRelation.CreatedBy != userId)

@@ -23,11 +23,11 @@ namespace BackSide2.BL.ParsePageService
             var fullRootAddress = web.ResponseUri.AbsoluteUri.Split(rootAddress)[0] + rootAddress;
 
             var pageImages = new List<string>();
-            pageImages.AddRange(GetpageFavicons(htmlDoc, fullRootAddress));
-            pageImages.AddRange(GetpageImages(htmlDoc, fullRootAddress));
+            pageImages.AddRange(GetPageFavicons(htmlDoc, fullRootAddress));
+            pageImages.AddRange(GetPageImages(htmlDoc, fullRootAddress));
             pageImages = pageImages.Distinct().ToList();
 
-            return new ParsePageReturnDto(model.Url, GetpageTitle(htmlDoc), pageImages,
+            return new ParsePageReturnDto(model.Url, GetPageTitle(htmlDoc), pageImages,
                 GetPageTexts(htmlDoc, model.MinTextLenght, model.MaxTextLenght));
         }
 
@@ -43,7 +43,7 @@ namespace BackSide2.BL.ParsePageService
             }
         }
 
-        private static string GetpageTitle(HtmlDocument htmlDoc)
+        private static string GetPageTitle(HtmlDocument htmlDoc)
         {
             return htmlDoc.DocumentNode.SelectSingleNode("//head/title").InnerText;
         }
@@ -58,7 +58,7 @@ namespace BackSide2.BL.ParsePageService
             return url;
         }
 
-        private static IEnumerable<string> GetpageFavicons(HtmlDocument htmlDoc, string fullRootAddress)
+        private static IEnumerable<string> GetPageFavicons(HtmlDocument htmlDoc, string fullRootAddress)
         {
             var favicon = new List<string>();
             foreach (var link in htmlDoc.DocumentNode.SelectNodes("//link[@href]"))
@@ -74,7 +74,7 @@ namespace BackSide2.BL.ParsePageService
             return favicon;
         }
 
-        private static IEnumerable<string> GetpageImages(HtmlDocument htmlDoc, string fullRootAddress)
+        private static IEnumerable<string> GetPageImages(HtmlDocument htmlDoc, string fullRootAddress)
         {
             var resultList = new List<string>();
             var possibleLogo = new List<string>();

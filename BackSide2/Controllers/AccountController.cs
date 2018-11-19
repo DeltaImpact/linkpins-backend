@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using BackSide2.BL.Authorize;
 using Microsoft.AspNetCore.Mvc;
-using BackSide2.BL.authorize;
 using BackSide2.BL.Models.AuthorizeDto;
 using BackSide2.BL.Models.ProfileDto;
 using BackSide2.BL.ProfileService;

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using BackSide2.BL.Models.AuthorizeDto;
 
-namespace BackSide2.BL.authorize
+namespace BackSide2.BL.Authorize
 {
     public interface ITokenService 
     {

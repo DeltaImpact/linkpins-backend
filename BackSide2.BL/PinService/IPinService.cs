@@ -5,7 +5,7 @@ namespace BackSide2.BL.PinService
 {
     public interface IPinService
     {
-        Task<object> AddPinAsync(AddPinDto model);
+        Task<long> AddPinAsync(AddPinDto model);
 
         Task<PinReturnDto> GetPinAsync(int pinId);
         Task<PinReturnDto> DeletePinAsync(int pinId);

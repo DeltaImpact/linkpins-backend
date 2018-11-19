@@ -35,7 +35,7 @@ namespace BackSide2.BL.PinService
         }
 
 
-        public async Task<object> AddPinAsync(AddPinDto model)
+        public async Task<long> AddPinAsync(AddPinDto model)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var usr = await (await _personService.GetAllAsync(d => d.Id == userId)).FirstOrDefaultAsync();
@@ -43,7 +43,7 @@ namespace BackSide2.BL.PinService
                 await _boardService.GetByIdAsync(model.BoardId);
             if (boardInDb == null)
             {
-                throw new BoardServiceException("Board not found.");
+                throw new ObjectNotFoundException("Board not found.");
             }
 
             if (boardInDb.CreatedBy != userId)
@@ -59,7 +59,7 @@ namespace BackSide2.BL.PinService
                 Board = boardInDb
             };
             await _boardPinService.InsertAsync(relation);
-            return new {pin.Id};
+            return  pin.Id;
         }
 
         public async Task<PinReturnDto> GetPinAsync(int pinId)
@@ -70,7 +70,7 @@ namespace BackSide2.BL.PinService
 
             if (pin == null)
             {
-                throw new BoardServiceException("Pin not found.");
+                throw new ObjectNotFoundException("Pin not found.");
             }
 
             var boards =
@@ -89,7 +89,7 @@ namespace BackSide2.BL.PinService
 
             if (pin == null)
             {
-                throw new BoardServiceException("Pin not found.");
+                throw new ObjectNotFoundException("Pin not found.");
             }
 
             if (pin.CreatedBy != userId)
@@ -117,7 +117,7 @@ namespace BackSide2.BL.PinService
                 await _pinService.GetByIdAsync(model.Id);
             if (pinOld == null)
             {
-                throw new BoardServiceException("Pin not found.");
+                throw new ObjectNotFoundException("Pin not found.");
             }
 
             if (pinOld.CreatedBy != userId)

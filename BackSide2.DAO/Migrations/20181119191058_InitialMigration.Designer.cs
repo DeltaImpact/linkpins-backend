@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackSide2.DAO.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20180920111811_BoardAndPinObjectsAddedAttempt4Migration")]
-    partial class BoardAndPinObjectsAddedAttempt4Migration
+    [Migration("20181119191058_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.2-rtm-30932")
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -41,13 +41,67 @@ namespace BackSide2.DAO.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<long?>("UpdatedBy");
+                    b.Property<long?>("PersonId");
 
-                    b.Property<long>("UserId");
+                    b.Property<long?>("UpdatedBy");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PersonId");
+
                     b.ToTable("Boards");
+                });
+
+            modelBuilder.Entity("BackSide2.DAO.Entities.BoardPin", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long?>("BoardId");
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<long?>("CreatedBy");
+
+                    b.Property<DateTime?>("Modified");
+
+                    b.Property<long?>("PinId");
+
+                    b.Property<long?>("UpdatedBy");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BoardId");
+
+                    b.HasIndex("PinId");
+
+                    b.ToTable("BoardPin");
+                });
+
+            modelBuilder.Entity("BackSide2.DAO.Entities.ChatMessage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<long?>("CreatedBy");
+
+                    b.Property<string>("MessageContent");
+
+                    b.Property<DateTime?>("Modified");
+
+                    b.Property<long?>("ReceivedById");
+
+                    b.Property<long?>("UpdatedBy");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceivedById");
+
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("BackSide2.DAO.Entities.Person", b =>
@@ -91,8 +145,6 @@ namespace BackSide2.DAO.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("BoardId");
-
                     b.Property<DateTime>("Created");
 
                     b.Property<long?>("CreatedBy");
@@ -112,6 +164,31 @@ namespace BackSide2.DAO.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Pins");
+                });
+
+            modelBuilder.Entity("BackSide2.DAO.Entities.Board", b =>
+                {
+                    b.HasOne("BackSide2.DAO.Entities.Person", "Person")
+                        .WithMany("Boards")
+                        .HasForeignKey("PersonId");
+                });
+
+            modelBuilder.Entity("BackSide2.DAO.Entities.BoardPin", b =>
+                {
+                    b.HasOne("BackSide2.DAO.Entities.Board", "Board")
+                        .WithMany("BoardPins")
+                        .HasForeignKey("BoardId");
+
+                    b.HasOne("BackSide2.DAO.Entities.Pin", "Pin")
+                        .WithMany("BoardPins")
+                        .HasForeignKey("PinId");
+                });
+
+            modelBuilder.Entity("BackSide2.DAO.Entities.ChatMessage", b =>
+                {
+                    b.HasOne("BackSide2.DAO.Entities.Person", "ReceivedBy")
+                        .WithMany()
+                        .HasForeignKey("ReceivedById");
                 });
 #pragma warning restore 612, 618
         }

@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BackSide2.BL.authorize
+namespace BackSide2.BL.Authorize
 {
     public class TokenService : ITokenService
     {
@@ -38,17 +38,17 @@ namespace BackSide2.BL.authorize
             if (person != null)
             {
                 if (person.UserName == model.Username && person.Email == model.Email)
-                    throw new TokenServiceException("Email and username already taken.");
+                    throw new ArgumentException("Email and username already taken.");
 
-                if (person.UserName == model.Username) throw new TokenServiceException("Username already taken.");
+                if (person.UserName == model.Username) throw new ArgumentException("Username already taken.");
 
-                if (person.Email == model.Email) throw new TokenServiceException("Email already taken.");
+                if (person.Email == model.Email) throw new ArgumentException("Email already taken.");
             }
 
             var systemUser = await (await _personService.GetAllAsync(d => d.UserName == "system"))
                 .FirstOrDefaultAsync();
             if (systemUser == null)
-                throw new TokenServiceException("SystemUserNotFound");
+                throw new ApplicationException("SystemUserNotFound");
 
             var newUser = await _personService.InsertAsync(model.ToPerson(systemUser));
 
@@ -67,7 +67,7 @@ namespace BackSide2.BL.authorize
             if (person != null)
                 return person.ToLoggedDto(GenerateJwtToken(person));
 
-            throw new TokenServiceException("Wrong email, or password.");
+            throw new ArgumentException("Wrong email, or password.");
         }
 
 

@@ -40,13 +40,13 @@ namespace BackSide2.BL.ProfileService
                 await (await _personService.GetAllAsync(user => user.UserName == model.Username && user.Id != userId))
                     .AnyAsync();
             if (userNameExist)
-                throw new ProfileServiceException("Username already taken.");
+                throw new ObjectAlreadyExistException("Username already taken.");
 
             var emailExist =
                 await (await _personService.GetAllAsync(user => user.Email == model.Email && user.Id != userId))
                     .AnyAsync();
             if (emailExist)
-                throw new ProfileServiceException("Email already taken.");
+                throw new ObjectAlreadyExistException("Email already taken.");
 
             return (await _personService.UpdateAsync(model.ToPerson(userInDb))).ToLoggedDto();
         }

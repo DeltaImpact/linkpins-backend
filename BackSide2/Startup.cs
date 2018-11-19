@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using BackSide2.DAO.Data;
-using BackSide2.Extentions;
+using BackSide2.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
