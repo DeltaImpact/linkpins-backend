@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Threading.Tasks;
 using BackSide2.DAO.Data;
 using BackSide2.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -35,25 +36,53 @@ namespace BackSide2
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters =
+                        new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidIssuer = Configuration["JwtIssuer"],
+                            ValidateAudience = true,
+                            ValidAudience = Configuration["JwtAudience"],
+                            ValidateLifetime = true,
+                            IssuerSigningKey = key,
+                            ValidateIssuerSigningKey = true,
+                        };
 
-                    options.TokenValidationParameters = new TokenValidationParameters
+                    options.Events = new JwtBearerEvents
                     {
-                        ValidateIssuer = true,
-                        ValidIssuer = Configuration["JwtIssuer"],
-                        ValidateAudience = true,
-                        ValidAudience = Configuration["JwtAudience"],
-                        ValidateLifetime = true,
-                        IssuerSigningKey = key,
-                        ValidateIssuerSigningKey = true,
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            // If the request is for our hub...
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) &&
+                                (path.StartsWithSegments("/chatHub")))
+                            {
+                                // Read the token out of the query string
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
                     };
                 });
-            services.AddDbContext<DataContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+                builder =>
+                {
+                    builder.AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowAnyOrigin()
+                        .AllowCredentials();
+                }));
+            services.AddSignalR();
             services.AddRepository();
             services.AddScopedServices();
-            services.AddCors();
             services.AddHttpContextAccessor();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddDbContext<DataContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                    b => b.MigrationsAssembly("BackSide2.DAO")));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -67,16 +96,12 @@ namespace BackSide2
                 app.UseHsts();
             }
 
-            app.UseCors(builder =>
-                builder
-                    .AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
-
+            app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseSignalR(routes => { routes.MapHub<ChatHub>("/chatHub"); });
             app.UseMvc();
         }
     }

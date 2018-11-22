@@ -29,5 +29,6 @@ namespace BackSide2.DAO.Data
         public DbSet<Board> Boards { get; set; }
         public DbSet<Pin> Pins { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<ChatConnectedUsers> ChatConnectedUsers { get; set; }
     }
 }
