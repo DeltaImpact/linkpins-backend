@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using BackSide2.BL.Models.ChatDto;
 using Microsoft.AspNetCore.Mvc;
 using BackSide2.BL.ProfileService;
 using BackSide2.DAO.Entities;
 using BackSide2.DAO.Repository;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackSide2.Controllers
 {
     [Route("chat")]
-    [ApiController]
+    //[ApiController]
     public class ChatController : ControllerBase
     {
         private readonly IHubContext<ChatHub> _hubContext;
@@ -28,6 +30,7 @@ namespace BackSide2.Controllers
             _personService = personService;
             _chatMessageRepository = chatMessageRepository;
         }
+
 
         [Authorize]
         [HttpPost("sendMessage")]

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BackSide2.BL.Exceptions;
 using BackSide2.BL.Extensions;
 using BackSide2.BL.Models.AuthorizeDto;
 using BackSide2.BL.Models.ProfileDto;
+using BackSide2.BL.UsersConnections;
 using BackSide2.DAO.Entities;
 using BackSide2.DAO.Repository;
 using Microsoft.AspNetCore.Http;
@@ -16,12 +18,35 @@ namespace BackSide2.BL.ProfileService
     {
         private readonly IRepository<Person> _personService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
+        private readonly IConnectionMapping _connectionMapping;
         public ProfileService(
-            IRepository<Person> personService, IHttpContextAccessor httpContextAccessor)
+            IRepository<Person> personService, IHttpContextAccessor httpContextAccessor, IConnectionMapping connectionMapping)
         {
             _personService = personService;
             _httpContextAccessor = httpContextAccessor;
+            _connectionMapping = connectionMapping;
+        }
+
+        public async Task<ProfileReturnDto> GetUserProfileInfo(string userNickname)
+        {
+            if (userNickname == null)
+            {
+                throw new ArgumentException();
+            }
+
+            var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            //var isOnline = await _connectionMapping.IsOnline(userId);
+            var user =
+                await (await _personService.GetAllAsync(o => o.UserName == userNickname)).FirstAsync();
+            if (user == null)
+            {
+                throw new ObjectNotFoundException("Pin not found.");
+            }
+
+            var isOnline = _connectionMapping.IsOnline(user.Id);
+            return user.Id == userId ? user.ToProfileOwnReturnDto() : user.ToProfileReturnDto(isOnline);
+            //return user.Id == userId ? user.ToProfileOwnReturnDto() : user.ToProfileReturnDto();
         }
 
         public async Task<ProfileReturnDto> GetUserProfileInfo()

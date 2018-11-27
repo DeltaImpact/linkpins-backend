@@ -4,5 +4,6 @@
     {
         public string MessageContent { get; set; }
         public Person ReceivedBy { get; set; }
+        public bool Received { get; set; } = false;
     }
 }

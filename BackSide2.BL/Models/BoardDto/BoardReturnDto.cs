@@ -16,5 +16,6 @@ namespace BackSide2.BL.Models.BoardDto
         public DateTime? Created { get; set; }
         public List<PinReturnDto> Pins {get; set; }
         public bool? IsLast { get; set; }
+        public int PinsCount { get; set; }
     }
 }

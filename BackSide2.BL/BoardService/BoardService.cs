@@ -126,9 +126,14 @@ namespace BackSide2.BL.BoardService
 
         public async Task<List<BoardReturnDto>> GetBoardsAsync()
         {
+
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            //var boardslist = (await _boardService.GetAllAsync(d => d.Id == userId))
+            //    .Select(o => o.ToBoardReturnDto())
+            //    .ToList();
+
             var boards = (await _personService.GetAllAsync(d => d.Id == userId, x => x.Boards)).FirstOrDefault()?.Boards
-                .Select(o => o.ToBoardReturnDto())
+                .Select(o => o.ToBoardReturnDto(o.BoardPins.Count))
                 .ToList();
             return boards;
         }

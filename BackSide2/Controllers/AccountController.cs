@@ -57,6 +57,23 @@ namespace BackSide2.Controllers
         [Authorize]
         [HttpGet("user")]
         public async Task<IActionResult> Profile(
+            string userNickname
+        )
+        {
+            try
+            {
+                var user = await _profileService.GetUserProfileInfo(userNickname);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {ex.Message});
+            }
+        }
+
+        [Authorize]
+        [HttpGet("settings")]
+        public async Task<IActionResult> Settings(
         )
         {
             try
@@ -66,7 +83,7 @@ namespace BackSide2.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new {ex.Message});
+                return BadRequest(new { ex.Message });
             }
         }
 

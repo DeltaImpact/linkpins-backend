@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using BackSide2.DAO.Entities;
-using BackSide2.DAO.Repository;
+using System.Web;
+using BackSide2.BL.UsersConnections;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Internal;
@@ -12,23 +15,18 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace BackSide2
 {
-    //[ApiController]
-    //[Authorize]
+    [Authorize]
     public class ChatHub : Hub
     {
-        private readonly IRepository<Person> _profileRepository;
-        private readonly IRepository<ChatMessage> _chatMessageRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConnectionMapping _connectionMapping; 
 
-        public static ConcurrentDictionary<string, MyUserType> MyUsers = new ConcurrentDictionary<string, MyUserType>();
-
-        public ChatHub(IRepository<Person> profileRepository, IRepository<ChatMessage> chatMessageRepository,
-            IHttpContextAccessor httpContextAccessor)
+        public ChatHub(IHttpContextAccessor httpContextAccessor, IConnectionMapping connectionMapping)
         {
-            _profileRepository = profileRepository;
-            _chatMessageRepository = chatMessageRepository;
             _httpContextAccessor = httpContextAccessor;
+            _connectionMapping = connectionMapping;
         }
+
 
         public void Send(string name, string message)
         {
@@ -36,39 +34,43 @@ namespace BackSide2
             Clients.All.SendAsync(name, message);
         }
 
-        ////[AllowAnonymous]
-        //public override async Task OnConnectedAsync()
-        //{
-        //    //var identity = Context.User.Identity;
+        //[AllowAnonymous]
+        public override async Task OnConnectedAsync()
+        {
+            var identity = Context.User.Identity;
+            var connectionId = Context.ConnectionId;
+            if (identity.IsAuthenticated)
+            {
+                try
+                {
+                    await _connectionMapping.Add(connectionId);
 
-        //    //if (identity.IsAuthenticated)
-        //    //{
-        //    //    await Groups.AddToGroupAsync(Context.ConnectionId, groupName:(identity.Name)).ConfigureAwait(false);
-        //    //}
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+                await Groups.AddToGroupAsync(Context.ConnectionId, groupName: (identity.Name)).ConfigureAwait(false);
+            }
 
+            //await base.OnConnectedAsync();
+        }
+        
+        public override async Task OnDisconnectedAsync(Exception ex)
+        {
+            var identity = Context.User.Identity;
+            var connectionId = Context.ConnectionId;
+            if (identity.IsAuthenticated)
+            {
+                await _connectionMapping.Remove(connectionId);
+                //await Groups.AddToGroupAsync(Context.ConnectionId, groupName: (identity.Name)).ConfigureAwait(false);
+            }
 
-        //    //var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-        //    //var userId1 = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Email).Value);
-        //    //var userId12 = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sub).Value);
-        //    //var userId1 = _httpContextAccessor.HttpContext.User.Claims.ToList();
-        //    var token = Context.Items;
-        //    var ConnectionId = Context.ConnectionId;
-        //    MyUsers.TryAdd(Context.ConnectionId, new MyUserType() {ConnectionId = Context.ConnectionId});
-        //    await Clients.All.SendAsync("SendAction", Context.User.Identity.Name, Context.ConnectionId, "joined");
-        //    await base.OnConnectedAsync();
-        //}
+            //await Clients.All.SendAsync("SendAction", Context.User.Identity.Name, "left");
+        }
 
-        //public override async Task OnDisconnectedAsync(Exception ex)
-        //{
-        //    MyUserType garbage;
-
-        //    MyUsers.TryRemove(Context.ConnectionId, out garbage);
-
-        //    await Clients.All.SendAsync("SendAction", Context.User.Identity.Name, "left");
-        //}
-
-        //[Authorize]
-        //[Authorize(JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         public async Task AddMessage(string message, MessageReceivedContext receivedContext)
         {
             var asd = receivedContext.Request.Headers["Accept"];
@@ -76,21 +78,29 @@ namespace BackSide2
             await Clients.All.SendAsync("SendAction", message);
         }
 
+        [Authorize]
         public async Task AddMessage1(string message, MessageReceivedContext receivedContext)
         {
             var asd = Context;
             await Clients.All.SendAsync("SendAction", message);
         }
 
+
+        public async Task IsOnline(long userId, MessageReceivedContext receivedContext)
+        {
+            //var context = GlobalHost.ConnectionManager.GetHubContext<SampleHub>();
+            //var clients = context.Clients.All;
+
+            var clients = Context.Items.Values;
+            var clients1 = Context.Items.Keys;
+
+            var asd = Context;
+            await Clients.All.SendAsync("SendAction", "asd");
+        }
+
         //public async Task Send(string message)
         //{
         //    await Clients.All.SendAsync("SendMessage", Context.User.Identity.Name, message);
         //}
-    }
-
-    public class MyUserType
-    {
-        public string ConnectionId { get; set; }
-        // Can have whatever you want here
     }
 }

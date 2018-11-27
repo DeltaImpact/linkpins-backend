@@ -6,6 +6,7 @@ namespace BackSide2.BL.ProfileService
 {
     public interface IProfileService
     {
+        Task<ProfileReturnDto> GetUserProfileInfo(string userNickname);
         Task<ProfileReturnDto> GetUserProfileInfo();
         Task<LoggedDto> ChangeProfileAsync(EditProfileDto model);
         Task ChangePasswordAsync(ChangePasswordDto model);

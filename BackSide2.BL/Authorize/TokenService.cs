@@ -93,10 +93,6 @@ namespace BackSide2.BL.Authorize
                 new Claim(JwtRegisteredClaimNames.Sub, id.ToString()),
                 new Claim("role", role),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-
-                new Claim(ClaimsIdentity.DefaultNameClaimType, login),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, role),
-                new Claim(ClaimTypes.NameIdentifier, id.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));

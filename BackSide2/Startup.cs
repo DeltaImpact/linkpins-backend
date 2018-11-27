@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using BackSide2.DAO.Data;
 using BackSide2.Extensions;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -59,10 +61,15 @@ namespace BackSide2
                             if (!string.IsNullOrEmpty(accessToken) &&
                                 (path.StartsWithSegments("/chatHub")))
                             {
+                                //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "Your Oauth token");
+                                
                                 // Read the token out of the query string
                                 context.Token = accessToken;
                             }
-
+                            var sad = context.HttpContext.Request.Headers;
+                            var sad1 = context.HttpContext.Request.Headers["Authorization"];
+                            var asd = context.Request.Headers;
+                            var asd1 = context.Request.Headers["Authorization"];
                             return Task.CompletedTask;
                         }
                     };

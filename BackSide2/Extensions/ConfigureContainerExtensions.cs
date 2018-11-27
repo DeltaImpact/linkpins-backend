@@ -4,6 +4,7 @@ using BackSide2.BL.BoardService;
 using BackSide2.BL.ParsePageService;
 using BackSide2.BL.PinService;
 using BackSide2.BL.ProfileService;
+using BackSide2.BL.UsersConnections;
 using BackSide2.DAO.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,7 @@ namespace BackSide2.Extensions
             serviceCollection.AddScoped<IPinService, PinService>();
             serviceCollection.AddScoped<IProfileService, ProfileService>();
             serviceCollection.AddScoped<IBoardPinService, BoardPinService>();
+            serviceCollection.AddScoped<IConnectionMapping, ConnectionMapping>();
         }
     }
 }

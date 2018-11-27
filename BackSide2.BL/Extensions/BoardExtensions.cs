@@ -20,6 +20,22 @@ namespace BackSide2.BL.Extensions
                 Created = board.Created,
             };
         }
+
+        public static BoardReturnDto ToBoardReturnDto(this Board board, int pinsCount)
+        {
+            return new BoardReturnDto
+            {
+                Id = board.Id,
+                Name = board.Name,
+                Description = board.Description,
+                Img = board.Img,
+                IsPrivate = board.IsPrivate,
+                Modified = board.Modified,
+                Created = board.Created,
+                PinsCount = board.BoardPins.Count
+            };
+        }
+
         public static BoardReturnDto ToBoardReturnDto(this Board board, bool? isOwner)
         {
             return new BoardReturnDto
