@@ -27,9 +27,10 @@ namespace BackSide2.BL.UsersConnections
         public async Task Add(string connectionId)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var connectionInDb = await (await _chatConnectedUsers.GetAllAsync(o => o.ConnectionId == connectionId))
-                .AnyAsync();
-            if (connectionInDb) await Remove(connectionId);
+            var connectionInDb = await (await _chatConnectedUsers.GetAllAsync(o => o.UserId == userId))
+                .FirstOrDefaultAsync();
+            if (connectionInDb != null) await _chatConnectedUsers.RemoveAsync(connectionInDb);
+            //if (connectionInDb) await Remove(connectionId);
             var connection = new ChatConnectedUser
             {
                 CreatedBy = userId,
@@ -43,7 +44,7 @@ namespace BackSide2.BL.UsersConnections
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var connectionInDb =
-                await (await _chatConnectedUsers.GetAllAsync(o => o.ConnectionId == connectionId)).FirstAsync();
+                await (await _chatConnectedUsers.GetAllAsync(o => o.ConnectionId == connectionId)).FirstOrDefaultAsync();
             if (connectionInDb == null)
             {
                 throw new ObjectNotFoundException("Connection not found.");
@@ -59,7 +60,8 @@ namespace BackSide2.BL.UsersConnections
 
         public async Task<bool> IsOnline(long userId)
         {
-            return (await (await _chatConnectedUsers.GetAllAsync(o => o.UserId == userId)).AnyAsync());
+            var isOnline = (await (await _chatConnectedUsers.GetAllAsync(o => o.UserId == userId)).AnyAsync());
+            return isOnline;
         }
     }
 }

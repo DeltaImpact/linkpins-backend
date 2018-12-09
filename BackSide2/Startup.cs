@@ -82,6 +82,7 @@ namespace BackSide2
                         .AllowAnyHeader()
                         .AllowAnyOrigin()
                         .AllowCredentials();
+                        
                 }));
             services.AddSignalR();
             services.AddRepository();

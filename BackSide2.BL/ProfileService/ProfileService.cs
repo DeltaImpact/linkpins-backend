@@ -31,7 +31,8 @@ namespace BackSide2.BL.ProfileService
         {
             if (userNickname == null)
             {
-                throw new ArgumentException();
+                return await GetUserProfileInfo();
+                //throw new ArgumentException();
             }
 
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -41,18 +42,23 @@ namespace BackSide2.BL.ProfileService
                 await (await _personService.GetAllAsync(o => o.UserName == userNickname)).FirstAsync();
             if (user == null)
             {
-                throw new ObjectNotFoundException("Pin not found.");
+                throw new ObjectNotFoundException("User not found.");
             }
 
-            var isOnline = _connectionMapping.IsOnline(user.Id);
-            return user.Id == userId ? user.ToProfileOwnReturnDto() : user.ToProfileReturnDto(isOnline);
+            var isOnline = await _connectionMapping.IsOnline(user.Id);
+            return user.Id == userId ? user.ToProfileOwnReturnDto(isOnline) : user.ToProfileReturnDto(isOnline);
             //return user.Id == userId ? user.ToProfileOwnReturnDto() : user.ToProfileReturnDto();
         }
 
         public async Task<ProfileReturnDto> GetUserProfileInfo()
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var user = (await _personService.GetByIdAsync(userId)).ToProfileOwnReturnDto();
+            var isOnline = await _connectionMapping.IsOnline(userId);
+            var user = (await _personService.GetByIdAsync(userId)).ToProfileOwnReturnDto(isOnline);
+            if (user == null)
+            {
+                throw new ObjectNotFoundException("User not found.");
+            }
             return user;
         }
 

@@ -21,6 +21,7 @@ namespace BackSide2.BL.BoardService
         Task<BoardReturnDto> GetBoardAsync(int boardId);
 
         Task<List<BoardReturnDto>> GetBoardsAsync();
- 
+
+        Task<List<BoardReturnDto>> GetBoardsAsync(string userNickname);
     }
 }

@@ -27,7 +27,7 @@ namespace BackSide2.BL.ParsePageService
             pageImages.AddRange(GetPageImages(htmlDoc, fullRootAddress));
             pageImages = pageImages.Distinct().ToList();
 
-            return new ParsePageReturnDto(model.Url, GetPageTitle(htmlDoc), pageImages,
+            return new ParsePageReturnDto(GetPageTitle(htmlDoc), model.Url, pageImages,
                 GetPageTexts(htmlDoc, model.MinTextLenght, model.MaxTextLenght));
         }
 

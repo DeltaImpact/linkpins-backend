@@ -21,7 +21,7 @@ namespace BackSide2.BL.Extensions
             };
         }
 
-        public static BoardReturnDto ToBoardReturnDto(this Board board, int pinsCount)
+        public static BoardReturnDto ToBoardReturnDto(this Board board, int? pinsCount, bool? isOwner)
         {
             return new BoardReturnDto
             {
@@ -32,7 +32,8 @@ namespace BackSide2.BL.Extensions
                 IsPrivate = board.IsPrivate,
                 Modified = board.Modified,
                 Created = board.Created,
-                PinsCount = board.BoardPins.Count
+                PinsCount = pinsCount ?? 0,
+                IsOwner = isOwner
             };
         }
 

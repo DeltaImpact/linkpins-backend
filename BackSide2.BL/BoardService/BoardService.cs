@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BackSide2.BL.Exceptions;
@@ -126,16 +127,68 @@ namespace BackSide2.BL.BoardService
 
         public async Task<List<BoardReturnDto>> GetBoardsAsync()
         {
-
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            //var boardslist = (await _boardService.GetAllAsync(d => d.Id == userId))
-            //    .Select(o => o.ToBoardReturnDto())
+            //var personBoards =
+            //    (await _boardService.GetAllAsync(board => board.Person.Id == userId, board => board.BoardPins))
+            //    .OrderBy(board => board.Created)
+            //    .Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count))
             //    .ToList();
 
-            var boards = (await _personService.GetAllAsync(d => d.Id == userId, x => x.Boards)).FirstOrDefault()?.Boards
-                .Select(o => o.ToBoardReturnDto(o.BoardPins.Count))
+            var personBoards =
+                (await _boardService.GetAllAsync(board => board.Person.Id == userId, board => board.BoardPins))
+                .OrderBy(board => board.Created)
+                .Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count, true))
                 .ToList();
-            return boards;
+            //var person = await _personService.GetByIdAsync(userId);
+            //var personBoards1 = (await _boardService.GetAllAsync(board => person.Boards.Contains(board), board => board.BoardPins))
+            //    .OrderBy(board => board.Created)
+            //    .Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count))
+            //    .ToList();
+            //var personBoards = (await _personService.GetAllAsync(d => d.Id == userId, x => x.Boards)).FirstOrDefault()?.Boards
+            //    .OrderBy(ord => ord.Created)
+            //    .Select(o => o.ToBoardReturnDto(o.BoardPins?.Count))
+            //    .ToList();
+            return personBoards;
+            //var boards = (await _personService.GetAllAsync(d => d.Id == userId, x => x.Boards)).FirstOrDefault()?.Boards
+            //    .Select(o => o.ToBoardReturnDto(o.BoardPins.Count))
+            //    .ToList();
+            //return boards;
+        }
+
+        public async Task<List<BoardReturnDto>> GetBoardsAsync(string userNickname)
+        {
+            if (userNickname == null)
+            {
+                return await GetBoardsAsync();
+            }
+
+            var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var user =
+                await (await _personService.GetAllAsync(o => o.UserName == userNickname, x => x.Boards)).FirstAsync();
+            if (user == null)
+            {
+                throw new ObjectNotFoundException("User not found.");
+            }
+
+            if (user.Id == userId)
+            {
+                return await GetBoardsAsync();
+            }
+
+            var personBoards =
+                (await _boardService.GetAllAsync(board => board.Person.Id == user.Id))
+                .Where(w => w.IsPrivate == false)
+                .OrderBy(board => board.Created)
+                .Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count, false))
+                .ToList();
+
+            //var personBoards =
+            //    (await _boardService.GetAllAsync(board => board.Person.Id == userId, board => board.BoardPins))
+            //    .Where(w => w.IsPrivate == false)
+            //    .OrderBy(board => board.Created)
+            //    .Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count, false))
+            //    .ToList();
+            return personBoards;
         }
     }
 }

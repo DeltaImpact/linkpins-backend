@@ -14,6 +14,7 @@ namespace BackSide2.Controllers
     {
         private readonly IBoardService _boardService;
         private readonly IBoardPinService _boardPinService;
+
         public DeskController(IBoardService boardService, IBoardPinService boardPinService)
         {
             _boardService = boardService;
@@ -56,7 +57,7 @@ namespace BackSide2.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new {ex.Message});
             }
         }
 
@@ -113,11 +114,11 @@ namespace BackSide2.Controllers
 
         [Authorize]
         [HttpGet("getBoards")]
-        public async Task<IActionResult> GetBoards()
+        public async Task<IActionResult> GetBoards(string userNickname)
         {
             try
             {
-                var responsePayload = await _boardService.GetBoardsAsync();
+                var responsePayload = await _boardService.GetBoardsAsync(userNickname);
                 return Ok(responsePayload);
             }
             catch (Exception ex)

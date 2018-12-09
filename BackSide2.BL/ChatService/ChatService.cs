@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BackSide2.BL.Exceptions;
 using BackSide2.BL.Extensions;
+using BackSide2.BL.Models.ChatDto;
 using BackSide2.BL.Models.PinDto;
 using BackSide2.DAO.Entities;
 using BackSide2.DAO.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
-namespace BackSide2.BL.PinService
+namespace BackSide2.BL.ChatService
 {
-    public class PinService : IPinService
+    public class ChatService : IChatService
     {
         private readonly IRepository<Board> _boardService;
         private readonly IRepository<Person> _personService;
@@ -22,7 +21,7 @@ namespace BackSide2.BL.PinService
         private readonly IRepository<BoardPin> _boardPinService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PinService(
+        public ChatService(
             IRepository<Board> boardService,
             IRepository<Person> personService,
             IRepository<Pin> pinService, IRepository<BoardPin> boardPinService,
@@ -34,7 +33,18 @@ namespace BackSide2.BL.PinService
             _boardPinService = boardPinService;
             _httpContextAccessor = httpContextAccessor;
         }
-        
+
+
+        public Task<ReceiveMessageDto> SendMessageAsync(SendMessageDto Dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ReceiveMessageDto> GetLastMessagesInDialogAsync(int interlocutorId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<long> AddPinAsync(AddPinDto model)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -128,25 +138,6 @@ namespace BackSide2.BL.PinService
             var board =
                 await _pinService.UpdateAsync(model.ToPin(pinOld, userId));
             return board.ToPinReturnDto();
-        }
-
-        public Task<List<PinReturnDto>> GetPageMain(int pageNumber, int elementsPerPage)
-        {
-            if (pageNumber == null) pageNumber = 1;
-            if (elementsPerPage == null) elementsPerPage = 15;
-
-            //var pinsOnPage =
-            //    (await _pinService.GetAllAsync(pin => pin.BoardPins.B))
-            //    .OrderBy(board => board.Created)
-            //    .Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count, true))
-            //    .ToList();
-
-
-            //var boards = (await _boardService.GetAllAsync(board => person.Boards.Contains(board), board => board.BoardPins)).Skip(10).Take(20)
-            //    .OrderBy(board => board.Created)
-            //    .Select(o => o.ToBoardReturnDto(o.BoardPins?.Count))
-            //    .ToList();
-            throw new NotImplementedException();
         }
     }
 }

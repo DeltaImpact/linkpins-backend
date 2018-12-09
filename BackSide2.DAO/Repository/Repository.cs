@@ -20,6 +20,11 @@ namespace BackSide2.DAO.Repository
             _entities = context.Set<T>();
         }
 
+        //protected IQueryable<T> Query
+        //{
+        //    get { return _context.GetTable<T>(); }
+        //}
+
         //public async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null)
         //{
         //    if (predicate != null)

@@ -11,6 +11,7 @@ namespace BackSide2.BL.Models.ProfileDto
         public string Surname { get; set; }
         public bool? Gender { get; set; }
         public uint? Language { get; set; }
-        public Task<bool> IsOnline { get; set; }
+        public bool IsOnline { get; set; }
+        public long Id { get; set; }
     }
 }
