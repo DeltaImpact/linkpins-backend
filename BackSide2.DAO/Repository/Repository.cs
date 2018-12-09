@@ -46,6 +46,17 @@ namespace BackSide2.DAO.Repository
             });
         }
 
+
+        public async Task<IQueryable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
+        {
+            return await Task.Run(() =>
+            {
+                var result = this._entities.AsQueryable();
+                if (includes != null) result = includes.Aggregate(result, (current, expression) => current.Include(expression));
+                return result;
+            });
+        }
+
         public async Task<T> GetByIdAsync(long id) =>
             await _entities.FirstOrDefaultAsync(e => e.Id == id);
 

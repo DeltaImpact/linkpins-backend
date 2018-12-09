@@ -180,5 +180,26 @@ namespace BackSide2.Controllers
                 return BadRequest(new {ex.Message});
             }
         }
+
+
+        [HttpGet("getMainPage")]
+        public async Task<IActionResult> GetPageMain(
+
+        )
+        {
+            try
+            {
+                var resopnsePlayload = await _pinService.GetPageMain(1, 1);
+                return Ok(resopnsePlayload);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {ex.Message});
+            }
+        }
     }
 }

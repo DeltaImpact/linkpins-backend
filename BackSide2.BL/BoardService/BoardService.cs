@@ -17,6 +17,7 @@ namespace BackSide2.BL.BoardService
     public class BoardService : IBoardService
     {
         private readonly IRepository<Board> _boardService;
+        private readonly IRepository<Pin> _pinService;
         private readonly IRepository<Person> _personService;
         private readonly IRepository<BoardPin> _boardPinService;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -24,12 +25,13 @@ namespace BackSide2.BL.BoardService
         public BoardService(
             IRepository<Board> boardService,
             IRepository<Person> personService,
-            IRepository<BoardPin> boardPinService, IHttpContextAccessor httpContextAccessor)
+            IRepository<BoardPin> boardPinService, IHttpContextAccessor httpContextAccessor, IRepository<Pin> pinService)
         {
             _boardService = boardService;
             _personService = personService;
             _boardPinService = boardPinService;
             _httpContextAccessor = httpContextAccessor;
+            _pinService = pinService;
         }
 
 
@@ -111,11 +113,17 @@ namespace BackSide2.BL.BoardService
                 throw new UnauthorizedAccessException();
             }
 
+            //var boardsPins =
+            //    (await _pinService.GetAllAsync(pin => pin.BoardPins == userId, board => board.BoardPins))
+            //    .OrderBy(board => board.Created)
+            //    .Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count, true))
+            //    .ToList();
+
             var pins =
                 await (await _boardPinService.GetAllAsync(d => d.Board.Id == boardId, x => x.Pin))
                     .Select(e => e.Pin.ToPinReturnDto())
                     .ToListAsync();
-
+                //.Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count, true))
             var isOwner = board.Person.Id == userId;
             if (board == null)
             {

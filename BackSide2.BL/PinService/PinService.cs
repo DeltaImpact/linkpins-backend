@@ -130,16 +130,19 @@ namespace BackSide2.BL.PinService
             return board.ToPinReturnDto();
         }
 
-        public Task<List<PinReturnDto>> GetPageMain(int pageNumber, int elementsPerPage)
+        public async Task<List<PinReturnDto>> GetPageMain(int pageNumber, int elementsPerPage)
         {
             if (pageNumber == null) pageNumber = 1;
             if (elementsPerPage == null) elementsPerPage = 15;
 
-            //var pinsOnPage =
-            //    (await _pinService.GetAllAsync(pin => pin.BoardPins.B))
-            //    .OrderBy(board => board.Created)
-            //    .Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count, true))
-            //    .ToList();
+            //var pinsOnPage = ( await _pinService.GetAllAsync(pin => pin.BoardPins)).Include("Board").ToList();
+            var pinsOnPage = ( await _pinService.GetAllAsync(pin => pin.BoardPins)).ToList();
+            var asd = pinsOnPage;
+
+            //(await _pinService.GetAllAsync(pin => pin)).Include("Board").ToList();
+            //.OrderBy(board => board.Created)
+            //.Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count, true))
+            //.ToList();
 
 
             //var boards = (await _boardService.GetAllAsync(board => person.Boards.Contains(board), board => board.BoardPins)).Skip(10).Take(20)
