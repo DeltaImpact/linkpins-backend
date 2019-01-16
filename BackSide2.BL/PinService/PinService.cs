@@ -34,7 +34,7 @@ namespace BackSide2.BL.PinService
             _boardPinService = boardPinService;
             _httpContextAccessor = httpContextAccessor;
         }
-        
+
         public async Task<long> AddPinAsync(AddPinDto model)
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -59,7 +59,7 @@ namespace BackSide2.BL.PinService
                 Board = boardInDb
             };
             await _boardPinService.InsertAsync(relation);
-            return  pin.Id;
+            return pin.Id;
         }
 
         public async Task<PinReturnDto> GetPinAsync(int pinId)
@@ -135,10 +135,24 @@ namespace BackSide2.BL.PinService
             if (pageNumber == null) pageNumber = 1;
             if (elementsPerPage == null) elementsPerPage = 15;
 
-            //var pinsOnPage = ( await _pinService.GetAllAsync(pin => pin.BoardPins)).Include("Board").ToList();
-            var pinsOnPage = ( await _pinService.GetAllAsync(pin => pin.BoardPins)).ToList();
-            var asd = pinsOnPage;
+            var pinsForPage = (await _pinService.GetAllAsync())
+                .Include(e => e.BoardPins)
+                .ThenInclude(e => e.Board)
+                .Select(e => new
+                {
+                    Pin = e.ToPinReturnDto(),
+                    IsPrivate = e.BoardPins.Select(i => i.Board).All(ii => ii.IsPrivate),
+                })
+                //.Where(e => e.IsPrivate == false)
+                //.OrderBy(e => e.Pin.Created)
+                .ToList();
 
+            pinsForPage.RemoveAll(x => x.IsPrivate);
+            return pinsForPage.Select(e => e.Pin).OrderByDescending(e => e.Created).ToList();
+
+
+
+            //return PublicPins;
             //(await _pinService.GetAllAsync(pin => pin)).Include("Board").ToList();
             //.OrderBy(board => board.Created)
             //.Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count, true))
@@ -149,7 +163,7 @@ namespace BackSide2.BL.PinService
             //    .OrderBy(board => board.Created)
             //    .Select(o => o.ToBoardReturnDto(o.BoardPins?.Count))
             //    .ToList();
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }
