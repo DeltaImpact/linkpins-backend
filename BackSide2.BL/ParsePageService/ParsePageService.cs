@@ -21,7 +21,6 @@ namespace BackSide2.BL.ParsePageService
 
             var rootAddress = web.ResponseUri.Host;
             var fullRootAddress = web.ResponseUri.AbsoluteUri.Split(rootAddress)[0] + rootAddress;
-
             var pageImages = new List<string>();
             pageImages.AddRange(GetPageFavicons(htmlDoc, fullRootAddress));
             pageImages.AddRange(GetPageImages(htmlDoc, fullRootAddress));
@@ -52,9 +51,13 @@ namespace BackSide2.BL.ParsePageService
         {
             if (url.StartsWith('/') && !url.StartsWith("//"))
             {
-                url = fullRootAddress + url;
+                return fullRootAddress + url;
             }
 
+            //if (!url.StartsWith("ht"))
+            //{
+            //    return fullRootAddress + "/" + url;
+            //}
             return url;
         }
 
@@ -63,11 +66,17 @@ namespace BackSide2.BL.ParsePageService
             var favicon = new List<string>();
             foreach (var link in htmlDoc.DocumentNode.SelectNodes("//link[@href]"))
             {
-                var att = link.Attributes["href"];
-                if (att.Value.EndsWith(".ico"))
+                try
                 {
-                    var faviconLink = ConvertUrlToAbsolute(att.Value, fullRootAddress);
-                    favicon.Add(faviconLink);
+                    var att = link.Attributes["href"];
+                    if (att.Value.EndsWith(".ico"))
+                    {
+                        var faviconLink = ConvertUrlToAbsolute(att.Value, fullRootAddress);
+                        favicon.Add(faviconLink);
+                    }
+                }
+                catch (Exception e)
+                {
                 }
             }
 
@@ -83,23 +92,30 @@ namespace BackSide2.BL.ParsePageService
 
             foreach (var link in htmlDoc.DocumentNode.SelectNodes("//img"))
             {
-                var scr = ConvertUrlToAbsolute(link.Attributes["src"].Value, fullRootAddress);
-
-                var linkClass = "";
-
-                foreach (var attr in link.Attributes)
-                    if (attr.Name == "class")
-                        linkClass = attr.Value;
-
-
-                if (scr != "")
+                try
                 {
-                    if (linkClass.Contains("logo") || scr.Contains("logo"))
-                        possibleLogo.Add(scr);
-                    else if (linkClass.Contains("avatar") || scr.Contains("avatar"))
-                        possibleAvatar.Add(scr);
-                    else otherImages.Add(scr);
+                    var scr = ConvertUrlToAbsolute(link.Attributes["src"].Value, fullRootAddress);
+
+                    var linkClass = "";
+
+                    foreach (var attr in link.Attributes)
+                        if (attr.Name == "class")
+                            linkClass = attr.Value;
+
+
+                    if (scr != "")
+                    {
+                        if (linkClass.Contains("logo") || scr.Contains("logo"))
+                            possibleLogo.Add(scr);
+                        else if (linkClass.Contains("avatar") || scr.Contains("avatar"))
+                            possibleAvatar.Add(scr);
+                        else otherImages.Add(scr);
+                    }
                 }
+                catch (Exception e)
+                {
+                }
+
             }
 
             resultList.AddRange(possibleLogo);
