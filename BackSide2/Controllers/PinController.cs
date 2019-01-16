@@ -31,8 +31,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _pinService.GetPinAsync(id);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _pinService.GetPinAsync(id);
+                return Ok(responsePayload);
             }
             catch (Exception ex)
             {
@@ -48,8 +48,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _pinService.AddPinAsync(model);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _pinService.AddPinAsync(model);
+                return Ok(responsePayload);
             }
             catch (UnauthorizedAccessException)
             {
@@ -69,8 +69,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _pinService.DeletePinAsync(pinId);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _pinService.DeletePinAsync(pinId);
+                return Ok(responsePayload);
             }
             catch (UnauthorizedAccessException)
             {
@@ -90,8 +90,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _pinService.UpdatePinAsync(model);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _pinService.UpdatePinAsync(model);
+                return Ok(responsePayload);
             }
             catch (UnauthorizedAccessException)
             {
@@ -112,8 +112,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _boardPinService.GetBoardsWherePinsSavedAsync(pinId);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _boardPinService.GetBoardsWherePinsSavedAsync(pinId);
+                return Ok(responsePayload);
             }
             catch (Exception ex)
             {
@@ -129,8 +129,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _boardPinService.GetBoardsWherePinsNotSavedAsync(pinId);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _boardPinService.GetBoardsWherePinsNotSavedAsync(pinId);
+                return Ok(responsePayload);
             }
             catch (Exception ex)
             {
@@ -147,8 +147,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _boardPinService.AddPinToBoardAsync(model);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _boardPinService.AddPinToBoardAsync(model);
+                return Ok(responsePayload);
             }
             catch (UnauthorizedAccessException)
             {
@@ -168,8 +168,8 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _boardPinService.DeletePinFromBoardAsync(model);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _boardPinService.DeletePinFromBoardAsync(model);
+                return Ok(responsePayload);
             }
             catch (UnauthorizedAccessException)
             {
@@ -181,7 +181,7 @@ namespace BackSide2.Controllers
             }
         }
 
-
+        //[Authorize]
         [HttpGet("getMainPage")]
         public async Task<IActionResult> GetPageMain(
 
@@ -189,13 +189,13 @@ namespace BackSide2.Controllers
         {
             try
             {
-                var resopnsePlayload = await _pinService.GetPageMain(1, 1);
-                return Ok(resopnsePlayload);
+                var responsePayload = await _pinService.GetPageMain(1, 1);
+                return Ok(responsePayload);
             }
             catch (UnauthorizedAccessException)
             {
                 return Unauthorized();
-            }
+            }   
             catch (Exception ex)
             {
                 return BadRequest(new {ex.Message});
