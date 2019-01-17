@@ -4,4 +4,4 @@ This is back-end for [linkpins-frontend](https://github.com/DeltaImpact/linkpins
 
 ### Prerequisites
 
-This project require [linkpins-frontend](https://github.com/DeltaImpact/linkpins-frontend) as the front'end.
+This project require [linkpins-frontend](https://github.com/DeltaImpact/linkpins-frontend) as the front-end.
