@@ -14,5 +14,7 @@ namespace BackSide2.BL.Models.PinDto
         public DateTime? Modified { get; set; }
         public DateTime? Created { get; set; }
         public List<BoardReturnDto> Boards { get; set; }
+        public LastPinActionDto LastAction { get; set; }
+        
     }
 }

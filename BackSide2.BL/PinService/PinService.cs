@@ -64,6 +64,11 @@ namespace BackSide2.BL.PinService
 
         public async Task<PinReturnDto> GetPinAsync(int pinId)
         {
+            //if (!_pinService.ExistsByIdAsync(pinId).Result)
+            //{
+            //    throw new ObjectNotFoundException("Pin not found.");
+            //}
+
             var pin =
                 await (await _pinService.GetAllAsync(d => d.Id == pinId, x => x.BoardPins))
                     .FirstOrDefaultAsync();
@@ -77,8 +82,14 @@ namespace BackSide2.BL.PinService
                 await (await _boardPinService.GetAllAsync(d => d.Pin.Id == pinId, x => x.Board))
                     .Select(e => e.Board.ToBoardReturnDto()).ToListAsync();
 
+            var lastAction =
+                await (await _boardPinService.GetAllAsync(d => d.Pin.Id == pinId, x => x.Board))
+                    .Where(e => !e.Board.IsPrivate)
+                    .Include(e => e.Board.Person)
+                    .Select(e => e.ToLastPinActionDto())
+                    .FirstOrDefaultAsync();
 
-            return pin.ToPinReturnDto(boards);
+            return pin.ToPinReturnDto(boards, lastAction);
         }
 
         public async Task<PinReturnDto> DeletePinAsync(int pinId)
@@ -132,8 +143,8 @@ namespace BackSide2.BL.PinService
 
         public async Task<List<PinReturnDto>> GetPageMain(int pageNumber, int elementsPerPage)
         {
-            if (pageNumber == null) pageNumber = 1;
-            if (elementsPerPage == null) elementsPerPage = 15;
+            //if (pageNumber == null) pageNumber = 1;
+            //if (elementsPerPage == null) elementsPerPage = 15;
 
             var pinsForPage = (await _pinService.GetAllAsync())
                 .Include(e => e.BoardPins)
@@ -149,7 +160,6 @@ namespace BackSide2.BL.PinService
 
             pinsForPage.RemoveAll(x => x.IsPrivate);
             return pinsForPage.Select(e => e.Pin).OrderByDescending(e => e.Created).ToList();
-
 
 
             //return PublicPins;
