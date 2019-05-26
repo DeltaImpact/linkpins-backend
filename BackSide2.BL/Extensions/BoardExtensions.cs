@@ -67,7 +67,7 @@ namespace BackSide2.BL.Extensions
                 IsLast = isLast
             };
         }
-        public static BoardReturnDto ToBoardReturnDto(this Board board, List<PinReturnDto> pins, bool? isOwner)
+        public static BoardReturnDto ToBoardReturnDto(this Board board, PinsReturnDto pins, bool? isOwner)
         {
             return new BoardReturnDto
             {

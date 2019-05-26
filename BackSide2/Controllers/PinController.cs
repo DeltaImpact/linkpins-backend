@@ -181,15 +181,14 @@ namespace BackSide2.Controllers
             }
         }
 
-        //[Authorize]
         [HttpGet("getMainPage")]
         public async Task<IActionResult> GetPageMain(
-
+            [FromQuery] GetMainPagePinsDto model
         )
         {
             try
             {
-                var responsePayload = await _pinService.GetPageMain(1, 1);
+                var responsePayload = await _pinService.GetPageMain(model);
                 return Ok(responsePayload);
             }
             catch (UnauthorizedAccessException)

@@ -110,5 +110,13 @@ namespace BackSide2.Controllers
             else
                 await _hubContext.Clients.All.SendAsync("StopTyping", user.UserName);
         }
+
+        [Authorize]
+        [HttpGet("getDialogs")]
+        public async Task GetDialogs()
+        {
+            var userId = long.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            
+        }
     }
 }

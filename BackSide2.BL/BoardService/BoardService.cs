@@ -123,6 +123,12 @@ namespace BackSide2.BL.BoardService
                 await (await _boardPinService.GetAllAsync(d => d.Board.Id == boardId, x => x.Pin))
                     .Select(e => e.Pin.ToPinReturnDto())
                     .ToListAsync();
+
+            var pinsCount =
+                 (await _boardPinService.GetAllAsync(d => d.Board.Id == boardId, x => x.Pin))
+                    .Count(); 
+
+
                 //.Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count, true))
             var isOwner = board.Person.Id == userId;
             if (board == null)
@@ -130,7 +136,7 @@ namespace BackSide2.BL.BoardService
                 throw new ObjectNotFoundException("Board not found.");
             }
 
-            return board.ToBoardReturnDto(pins, isOwner);
+            return board.ToBoardReturnDto(pins.ToPinsReturnDtoExtensions(pinsCount), isOwner);
         }
 
         public async Task<List<BoardReturnDto>> GetBoardsAsync()

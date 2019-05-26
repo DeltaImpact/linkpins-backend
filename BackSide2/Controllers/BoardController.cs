@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using BackSide2.BL.BoardPinService;
 using BackSide2.BL.BoardService;
 using BackSide2.BL.Models.BoardDto;
+using BackSide2.BL.Models.BoardPinDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,12 +44,12 @@ namespace BackSide2.Controllers
         [Authorize]
         [HttpGet("getBoardPins")]
         public async Task<IActionResult> GetBoardPins(
-            int boardId
+            [FromQuery] GetBoardPinsDto model
         )
         {
             try
             {
-                var responsePayload = await _boardPinService.GetBoardPinsAsync(boardId);
+                var responsePayload = await _boardPinService.GetBoardPinsAsync(model);
                 return Ok(responsePayload);
             }
             catch (UnauthorizedAccessException)

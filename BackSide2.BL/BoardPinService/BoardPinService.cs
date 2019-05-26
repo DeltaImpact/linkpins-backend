@@ -35,13 +35,13 @@ namespace BackSide2.BL.BoardPinService
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<List<PinReturnDto>> GetBoardPinsAsync(
-            int boardId
+        public async Task<PinsReturnDto> GetBoardPinsAsync(
+            GetBoardPinsDto model
         )
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var board =
-                await _boardService.GetByIdAsync(boardId);
+                await _boardService.GetByIdAsync(model.BoardId);
 
             if (board == null)
             {
@@ -54,11 +54,16 @@ namespace BackSide2.BL.BoardPinService
             }
 
             var pins =
-                await (await _boardPinService.GetAllAsync(d => d.Board.Id == boardId, x => x.Pin))
+                await (await _boardPinService.GetAllAsync(d => d.Board.Id == model.BoardId, x => x.Pin))
+                    .Skip(model.Offset)
+                    .Take(model.Take)
                     .Select(e => e.Pin.ToPinReturnDto())
                     .ToListAsync();
 
-            return pins;
+            var pinsCount =
+                 (await _boardPinService.GetAllAsync(d => d.Board.Id == model.BoardId, x => x.Pin)).Count();
+
+            return pins.ToPinsReturnDtoExtensions(pinsCount);
         }
 
         public async Task<List<BoardReturnDto>> GetBoardsWherePinsNotSavedAsync(

@@ -14,7 +14,7 @@ namespace BackSide2.BL.Models.BoardDto
         public bool? IsPrivate { get; set; }
         public DateTime? Modified { get; set; }
         public DateTime? Created { get; set; }
-        public List<PinReturnDto> Pins {get; set; }
+        public PinsReturnDto Pins {get; set; }
         public bool? IsLast { get; set; }
         public int PinsCount { get; set; }
     }

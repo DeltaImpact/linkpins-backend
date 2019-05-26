@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using BackSide2.BL.Models.BoardPinDto;
 using BackSide2.BL.Models.PinDto;
 
 namespace BackSide2.BL.PinService
@@ -12,6 +13,6 @@ namespace BackSide2.BL.PinService
         Task<PinReturnDto> DeletePinAsync(int pinId);
         Task<PinReturnDto> UpdatePinAsync(UpdatePinDto model);
 
-        Task<List<PinReturnDto>> GetPageMain(int pageNumber, int elementsPerPage);
+        Task<PinsReturnDto> GetPageMain(GetMainPagePinsDto model);
     }
 }

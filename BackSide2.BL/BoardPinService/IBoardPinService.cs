@@ -8,8 +8,8 @@ namespace BackSide2.BL.BoardPinService
 {
     public interface IBoardPinService
     {
-        Task<List<PinReturnDto>> GetBoardPinsAsync(
-            int boardId
+        Task<PinsReturnDto> GetBoardPinsAsync(
+            GetBoardPinsDto model
         );
 
         Task<List<BoardReturnDto>> GetBoardsWherePinsNotSavedAsync(

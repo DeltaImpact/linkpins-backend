@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using BackSide2.BL.Exceptions;
 using BackSide2.BL.Extensions;
+using BackSide2.BL.Models.BoardPinDto;
 using BackSide2.BL.Models.PinDto;
 using BackSide2.DAO.Entities;
 using BackSide2.DAO.Repository;
@@ -141,14 +142,14 @@ namespace BackSide2.BL.PinService
             return board.ToPinReturnDto();
         }
 
-        public async Task<List<PinReturnDto>> GetPageMain(int pageNumber, int elementsPerPage)
+        public async Task<PinsReturnDto> GetPageMain(GetMainPagePinsDto model)
         {
-            //if (pageNumber == null) pageNumber = 1;
-            //if (elementsPerPage == null) elementsPerPage = 15;
-
             var pinsForPage = (await _pinService.GetAllAsync())
                 .Include(e => e.BoardPins)
                 .ThenInclude(e => e.Board)
+                .Where(x => x.BoardPins.Any(c => !c.Board.IsPrivate))
+                .Skip(model.Offset)
+                .Take(model.Take)
                 .Select(e => new
                 {
                     Pin = e.ToPinReturnDto(),
@@ -158,22 +159,12 @@ namespace BackSide2.BL.PinService
                 //.OrderBy(e => e.Pin.Created)
                 .ToList();
 
-            pinsForPage.RemoveAll(x => x.IsPrivate);
-            return pinsForPage.Select(e => e.Pin).OrderByDescending(e => e.Created).ToList();
+            var pinsForPageCount = (await _pinService.GetAllAsync())
+                .Include(e => e.BoardPins)
+                .ThenInclude(e => e.Board)
+                .Count(x => x.BoardPins.Any(c => !c.Board.IsPrivate));
 
-
-            //return PublicPins;
-            //(await _pinService.GetAllAsync(pin => pin)).Include("Board").ToList();
-            //.OrderBy(board => board.Created)
-            //.Select(o => o.ToBoardReturnDto(o.BoardPins == null ? 0 : o.BoardPins.Count, true))
-            //.ToList();
-
-
-            //var boards = (await _boardService.GetAllAsync(board => person.Boards.Contains(board), board => board.BoardPins)).Skip(10).Take(20)
-            //    .OrderBy(board => board.Created)
-            //    .Select(o => o.ToBoardReturnDto(o.BoardPins?.Count))
-            //    .ToList();
-            //throw new NotImplementedException();
+            return pinsForPage.Select(e => e.Pin).OrderByDescending(e => e.Created).ToList().ToPinsReturnDtoExtensions(pinsForPageCount);
         }
     }
 }
