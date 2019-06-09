@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using BackSide2.BL.Exceptions;
+﻿using BackSide2.BL.Exceptions;
 using BackSide2.DAO.Entities;
 using BackSide2.DAO.Repository;
 using Microsoft.AspNetCore.Http;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BackSide2.BL.UsersConnections
 {
