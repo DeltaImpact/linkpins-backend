@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using BackSide2.BL.Models.ProfileDto;
+﻿using BackSide2.BL.Models.ProfileDto;
 using BackSide2.DAO.Entities;
 
 namespace BackSide2.BL.Extensions
@@ -19,6 +18,7 @@ namespace BackSide2.BL.Extensions
                 Gender = person.Gender,
                 Language = person.Language,
                 IsOnline = isOnline,
+                LastOnline = person.LastOnline,
             };
         }
 
@@ -27,7 +27,14 @@ namespace BackSide2.BL.Extensions
             return new ProfileReturnDto
             {
                 Id = person.Id,
-                UserName = person.UserName
+                UserName = person.UserName,
+                Email = person.Email,
+                Role = person.Role.ToString(),
+                FirstName = person.FirstName,
+                Surname = person.Surname,
+                Gender = person.Gender,
+                Language = person.Language,
+                LastOnline = person.LastOnline,
             };
         }
 
@@ -38,6 +45,13 @@ namespace BackSide2.BL.Extensions
                 Id = person.Id,
                 UserName = person.UserName,
                 IsOnline = isOnline,
+                LastOnline = person.LastOnline,
+                Email = person.Email,
+                Role = person.Role.ToString(),
+                FirstName = person.FirstName,
+                Surname = person.Surname,
+                Gender = person.Gender,
+                Language = person.Language,
             };
         }
     }

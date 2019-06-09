@@ -14,12 +14,16 @@ namespace BackSide2.BL.UsersConnections
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IRepository<ChatConnectedUser> _chatConnectedUsers;
+        private readonly IRepository<Person> _personService;
+
 
         public ConnectionMapping(IHttpContextAccessor httpContextAccessor,
-            IRepository<ChatConnectedUser> chatConnectedUsers)
+            IRepository<ChatConnectedUser> chatConnectedUsers,
+            IRepository<Person> personService)
         {
             _httpContextAccessor = httpContextAccessor;
             _chatConnectedUsers = chatConnectedUsers;
+            _personService = personService;
         }
 
         public async Task Add(string connectionId)
@@ -42,7 +46,8 @@ namespace BackSide2.BL.UsersConnections
         {
             var userId = long.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var connectionInDb =
-                await (await _chatConnectedUsers.GetAllAsync(o => o.ConnectionId == connectionId)).FirstOrDefaultAsync();
+                await (await _chatConnectedUsers.GetAllAsync(o => o.ConnectionId == connectionId))
+                    .FirstOrDefaultAsync();
             if (connectionInDb == null)
             {
                 throw new ObjectNotFoundException("Connection not found.");
@@ -52,6 +57,10 @@ namespace BackSide2.BL.UsersConnections
             {
                 throw new UnauthorizedAccessException("You have no permissions to delete this pin.");
             }
+
+            var user = (await _personService.GetByIdAsync(userId));
+            user.LastOnline = DateTime.Now;
+            await _personService.UpdateAsync(user);
 
             await _chatConnectedUsers.RemoveAsync(connectionInDb);
         }

@@ -14,6 +14,9 @@
     <Compile Remove="Migrations\20180920111811_BoardAndPinObjectsAddedAttempt4Migration.cs" />
     <Compile Remove="Migrations\20180924131157_AddedManyToManyRelationBetweenBoardAndPinMigration.cs" />
     <Compile Remove="Migrations\20180924132716_AddedManyToManyRelationBetweenBoardAndPinMigration.cs" />
+    <Compile Remove="Migrations\20181119191058_InitialMigration.cs" />
+    <Compile Remove="Migrations\20181127153014_AddedChatMessageEntityMigration.cs" />
+    <Compile Remove="Migrations\20190608150444_addedLastOnlineFieldToPersonMigration.cs" />
   </ItemGroup>
 
   <ItemGroup>

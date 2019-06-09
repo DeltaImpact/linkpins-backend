@@ -9,12 +9,29 @@ namespace BackSide2.DAO.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ChatConnectedUsers",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Created = table.Column<DateTime>(nullable: false),
+                    Modified = table.Column<DateTime>(nullable: true),
+                    CreatedBy = table.Column<long>(nullable: true),
+                    UpdatedBy = table.Column<long>(nullable: true),
+                    UserId = table.Column<long>(nullable: false),
+                    ConnectionId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChatConnectedUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Persons",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy",
-                            SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Created = table.Column<DateTime>(nullable: false),
                     Modified = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<long>(nullable: true),
@@ -26,17 +43,20 @@ namespace BackSide2.DAO.Migrations
                     FirstName = table.Column<string>(nullable: true),
                     Surname = table.Column<string>(nullable: true),
                     Gender = table.Column<bool>(nullable: true),
-                    Language = table.Column<long>(nullable: true)
+                    Language = table.Column<long>(nullable: true),
+                    LastOnline = table.Column<DateTime>(nullable: true)
                 },
-                constraints: table => { table.PrimaryKey("PK_Persons", x => x.Id); });
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Persons", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Pins",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy",
-                            SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Created = table.Column<DateTime>(nullable: false),
                     Modified = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<long>(nullable: true),
@@ -46,15 +66,17 @@ namespace BackSide2.DAO.Migrations
                     Img = table.Column<string>(nullable: true),
                     Link = table.Column<string>(nullable: true)
                 },
-                constraints: table => { table.PrimaryKey("PK_Pins", x => x.Id); });
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pins", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Boards",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy",
-                            SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Created = table.Column<DateTime>(nullable: false),
                     Modified = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<long>(nullable: true),
@@ -81,14 +103,14 @@ namespace BackSide2.DAO.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy",
-                            SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Created = table.Column<DateTime>(nullable: false),
                     Modified = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<long>(nullable: true),
                     UpdatedBy = table.Column<long>(nullable: true),
                     MessageContent = table.Column<string>(nullable: true),
-                    ReceivedById = table.Column<long>(nullable: true)
+                    ReceivedById = table.Column<long>(nullable: true),
+                    Received = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -106,8 +128,7 @@ namespace BackSide2.DAO.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy",
-                            SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Created = table.Column<DateTime>(nullable: false),
                     Modified = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<long>(nullable: true),
@@ -164,6 +185,9 @@ namespace BackSide2.DAO.Migrations
         {
             migrationBuilder.DropTable(
                 name: "BoardPin");
+
+            migrationBuilder.DropTable(
+                name: "ChatConnectedUsers");
 
             migrationBuilder.DropTable(
                 name: "ChatMessages");

@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using System;
 
 namespace BackSide2.BL.Models.ProfileDto
 {
@@ -13,5 +13,6 @@ namespace BackSide2.BL.Models.ProfileDto
         public uint? Language { get; set; }
         public bool IsOnline { get; set; }
         public long Id { get; set; }
+        public DateTime? LastOnline { get; set; }
     }
 }

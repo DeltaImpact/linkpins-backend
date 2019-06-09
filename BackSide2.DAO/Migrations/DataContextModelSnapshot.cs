@@ -97,7 +97,7 @@ namespace BackSide2.DAO.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChatConnectedUser");
+                    b.ToTable("ChatConnectedUsers");
                 });
 
             modelBuilder.Entity("BackSide2.DAO.Entities.ChatMessage", b =>
@@ -144,6 +144,8 @@ namespace BackSide2.DAO.Migrations
                     b.Property<bool?>("Gender");
 
                     b.Property<long?>("Language");
+
+                    b.Property<DateTime?>("LastOnline");
 
                     b.Property<DateTime?>("Modified");
 

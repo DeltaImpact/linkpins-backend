@@ -156,7 +156,7 @@ namespace BackSide2.BL.PinService
                     IsPrivate = e.BoardPins.Select(i => i.Board).All(ii => ii.IsPrivate),
                 })
                 //.Where(e => e.IsPrivate == false)
-                //.OrderBy(e => e.Pin.Created)
+                .OrderBy(e => e.Pin.Created)
                 .ToList();
 
             var pinsForPageCount = (await _pinService.GetAllAsync())

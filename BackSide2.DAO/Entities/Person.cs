@@ -14,7 +14,7 @@ namespace BackSide2.DAO.Entities
         public string Surname { get; set; }
         public bool? Gender { get; set; }
         public uint? Language { get; set; }
-
+        public DateTime? LastOnline { get; set; }
         public ICollection<Board> Boards { get; set; }
     }
 

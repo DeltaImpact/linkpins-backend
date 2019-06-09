@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackSide2.DAO.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20181119191058_InitialMigration")]
+    [Migration("20190608151142_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,6 +79,29 @@ namespace BackSide2.DAO.Migrations
                     b.ToTable("BoardPin");
                 });
 
+            modelBuilder.Entity("BackSide2.DAO.Entities.ChatConnectedUser", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ConnectionId");
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<long?>("CreatedBy");
+
+                    b.Property<DateTime?>("Modified");
+
+                    b.Property<long?>("UpdatedBy");
+
+                    b.Property<long>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChatConnectedUsers");
+                });
+
             modelBuilder.Entity("BackSide2.DAO.Entities.ChatMessage", b =>
                 {
                     b.Property<long>("Id")
@@ -92,6 +115,8 @@ namespace BackSide2.DAO.Migrations
                     b.Property<string>("MessageContent");
 
                     b.Property<DateTime?>("Modified");
+
+                    b.Property<bool>("Received");
 
                     b.Property<long?>("ReceivedById");
 
@@ -121,6 +146,8 @@ namespace BackSide2.DAO.Migrations
                     b.Property<bool?>("Gender");
 
                     b.Property<long?>("Language");
+
+                    b.Property<DateTime?>("LastOnline");
 
                     b.Property<DateTime?>("Modified");
 
