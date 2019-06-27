@@ -27,7 +27,7 @@ namespace BackSide2.BL.ParsePageService
             pageImages = pageImages.Distinct().ToList();
 
             return new ParsePageReturnDto(GetPageTitle(htmlDoc), model.Url, pageImages,
-                GetPageTexts(htmlDoc, model.MinTextLenght, model.MaxTextLenght));
+                GetPageTexts(htmlDoc, model.MinTextLength, model.MaxTextLength));
         }
 
         private static async Task<HtmlDocument> LoadPage(string url, HtmlWeb web)

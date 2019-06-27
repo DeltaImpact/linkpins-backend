@@ -11,12 +11,12 @@ namespace BackSide2.Controllers
 {
     [Route("board")]
     [ApiController]
-    public class DeskController : Controller
+    public class BoardController : Controller
     {
         private readonly IBoardService _boardService;
         private readonly IBoardPinService _boardPinService;
 
-        public DeskController(IBoardService boardService, IBoardPinService boardPinService)
+        public BoardController(IBoardService boardService, IBoardPinService boardPinService)
         {
             _boardService = boardService;
             _boardPinService = boardPinService;

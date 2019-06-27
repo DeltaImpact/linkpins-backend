@@ -6,7 +6,7 @@ namespace BackSide2.BL.Models.ParseDto
     {
         [Url] [Required] public string Url { get; set; }
 
-        public int MinTextLenght { get; set; } = 80;
-        public int MaxTextLenght { get; set; } = 500;
+        public int MinTextLength { get; set; } = 80;
+        public int MaxTextLength { get; set; } = 500;
     }
 }
